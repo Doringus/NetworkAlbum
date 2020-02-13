@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>res/fonts/fontawesome-webfont.ttf</file>
+        <file>qml/baseComponents/MenuButton.qml</file>
+        <file>qml/StartupMenu.qml</file>
+        <file>qml/baseComponents/CreateAlbumPopup.qml</file>
+        <file>qml/baseComponents/NTextField.qml</file>
+        <file>qml/baseComponents/NButton.qml</file>
+        <file>qml/baseComponents/NToggleButton.qml</file>
+        <file>qml/baseComponents/NToolTip.qml</file>
+        <file>qml/baseComponents/NSlider.qml</file>
+    </qresource>
+</RCC>
