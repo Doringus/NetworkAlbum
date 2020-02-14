@@ -5,6 +5,9 @@ import "baseComponents"
 
 Item {
     id: element
+
+    signal openServer()
+
     Rectangle {
         anchors.fill: parent
         color: "#252526"
@@ -12,6 +15,15 @@ Item {
 
     CreateAlbumPopup {
         id: createAlbumPopup
+        enter: Transition {
+            NumberAnimation {
+                property: "opacity"
+                easing.type: Easing.InOutQuad;
+                from: 0.2
+                to: 1.0
+            }
+        }
+        onCreated: element.openServer()
     }
 
     Label {

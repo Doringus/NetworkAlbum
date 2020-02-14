@@ -6,6 +6,7 @@ ToolTip {
     contentItem: Text {
         text: control.text
         font.bold: true
+        font.pointSize: 10
         color: "white"
     }
     background: Rectangle {

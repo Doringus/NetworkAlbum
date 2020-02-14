@@ -3,14 +3,17 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Popup {
+    id: popup
+    signal created()
+
     anchors.centerIn: parent
     width: 550
-    height: 530
+    height: 540
     modal: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-  //  Overlay.modal: Rectangle {
-  //          color: "#51000000"
-  //      }
+    Overlay.modal: Rectangle {
+            color: "#51000000"
+    }
     background: Rectangle {
         radius: 6
     }
@@ -133,6 +136,7 @@ Popup {
                 width: 120
                 height: 40
                 text: "Создать"
+                onClicked: popup.created()
             }
         }
     }
