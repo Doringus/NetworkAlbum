@@ -6,6 +6,47 @@ import "../baseComponents"
 
 Item {
     id: root
+    Popup {
+        id: codePopup
+        width: 440
+        height: 150
+        modal: true
+        anchors.centerIn: parent
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        Overlay.modal: Rectangle {
+                color: "#51000000"
+        }
+        background: Item {
+            Rectangle {
+                anchors.fill: parent
+                color: "#36393F"
+                radius: 8
+            }
+        }
+        contentItem: Rectangle {
+            color: "transparent"
+            Column {
+                spacing: 10
+                Label {
+                    text: "Отправьте другу код"
+                    color: "white"
+                    font.capitalization: Font.AllUppercase
+                    font.weight: Font.DemiBold
+                    font.pointSize: 12
+                }
+                NCopyField {
+                    anchors.right: parent.right
+                    isDark: true
+                    width: 410
+                }
+                Label {
+                    text: "Внимание! Приглашение работает только для одного пользователя"
+                    font.pointSize: 10
+                    color: "#FAA61A"
+                }
+            }
+        }
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -15,7 +56,7 @@ Item {
         id: grid
         anchors.fill: parent
         anchors.leftMargin: 50
-        anchors.topMargin: 50
+        anchors.topMargin: 30
         boundsBehavior: Flickable.StopAtBounds
         flow: GridView.LeftToRight
         snapMode: GridView.SnapToRow
@@ -32,9 +73,18 @@ Item {
                 color: "#9A9A9C"
             }
         }
-
+        header: Rectangle {
+            width: 350
+            height: 240
+            color: "transparent"
+            AlbumNewItem {
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
         delegate: AlbumListItem {
-
+            onClicked: {
+                codePopup.open()
+            }
         }
     }
 }

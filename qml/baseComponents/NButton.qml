@@ -12,7 +12,7 @@ Item {
     signal clicked()
 
     height: 35
-
+    width: 120
 
     Rectangle {
         id: rect

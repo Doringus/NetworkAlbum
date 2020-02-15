@@ -14,5 +14,7 @@
         <file>qml/baseComponents/NToolButton.qml</file>
         <file>qml/baseComponents/AlbumListItem.qml</file>
         <file>qml/pages/AlbumsPage.qml</file>
+        <file>qml/baseComponents/NCopyField.qml</file>
+        <file>qml/baseComponents/AlbumNewItem.qml</file>
     </qresource>
 </RCC>
