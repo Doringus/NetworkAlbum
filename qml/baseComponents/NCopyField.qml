@@ -31,26 +31,34 @@ Item {
             color: fieldColor
             border.color: borderColor //parent.activeFocus ? borderActiveColor: borderColor
             radius: 3
-            ColorAnimation  {
-                id: activeAnimation
-                target: rect
-                property: "border.color"
-                to: "#3CA374"
-                duration: 600
+
+            SequentialAnimation {
+                id: copyAnimation
+
                 onFinished: {
                     copyBtn.text = "Копировать"
-                    backAnimation.start()
+                }
+
+                ColorAnimation  {
+                    target: rect
+                    property: "border.color"
+                    to: "#3CA374"
+                    duration: 600
+                }
+
+                PauseAnimation {
+                    duration: 300
+                }
+                ColorAnimation {
+                    target: rect
+                    property: "border.color"
+                    to: borderColor
+                    duration: 300
                 }
             }
-            ColorAnimation {
-                id: backAnimation
-                target: rect
-                property: "border.color"
-                to: borderColor
-                duration: 300
-            }
-        }
 
+
+        }
 
         NButton {
             id: copyBtn
@@ -60,7 +68,7 @@ Item {
             anchors.margins: 5
             text: "Копировать"
             onClicked: {
-                activeAnimation.start()
+                copyAnimation.start()
                 textField.selectAll()
                 textField.copy()
                 textField.select(0, 0)
