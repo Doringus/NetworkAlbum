@@ -4,7 +4,13 @@ import QtQuick.Layouts 1.12
 
 Popup {
     id: popup
+
     signal created()
+
+    property var imageScale: 50
+    property var pathToAlbum: ""
+    property var hasReserveFolder: false
+    property var albumLink: "TESTLINK"
 
     anchors.centerIn: parent
     width: 550
@@ -12,6 +18,7 @@ Popup {
     modal: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     clip: true
+
     Overlay.modal: Rectangle {
             color: "#51000000"
     }
@@ -25,6 +32,9 @@ Popup {
         initialItem: albumSettings
     }
     onClosed: {
+        imageScale = 50
+        hasReserveFolder = false
+        pathToAlbum = ""
         stack.pop()
     }
 
@@ -70,6 +80,7 @@ Popup {
                            NTextField {
                                id: pathToAlbumField
                                Layout.preferredWidth: 320
+                               text: pathToAlbum
                            }
                            NButton {
                                width: 120
@@ -110,7 +121,11 @@ Popup {
                                color: "#87909C"
                            }
                            NToggleButton {
-
+                                id: toggleButton
+                                isChecked: hasReserveFolder
+                                onCheckedChanged: {
+                                    hasReserveFolder = check
+                                }
                            }
                        }
                    }
@@ -135,7 +150,7 @@ Popup {
                            id:slider
                            from: 1
                            to: 50
-                           value: 50
+                           value: imageScale
                        }
                        Label {
                            text: "Размер изображений, переданных клиенту, будет меньше на " + slider.value.toFixed(1) + "%"
@@ -187,12 +202,15 @@ Popup {
                     wrapMode: "WrapAtWordBoundaryOrAnywhere"
                     color: "#87909C"
                 }
-
-
                 NCopyField {
                     width: 480
+                    text: albumLink
                 }
-
+                Label {
+                    text: "Внимание! Приглашение работает только для одного пользователя"
+                    font.pointSize: 10
+                    color: "#FAA61A"
+                }
             }
 
 
@@ -213,8 +231,9 @@ Popup {
                     }
                     NButton {
                         text: "Создать"
-                        onClicked: popup.created()
+                        onClicked: {popup.created();console.log(hasReserveFolder)}
                         Layout.alignment: Qt.AlignRight
+
                     }
                 }
             }

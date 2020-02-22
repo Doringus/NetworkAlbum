@@ -4,8 +4,8 @@ import QtQuick.Controls 2.12
 
 Item {
     id: root
-    property string iconColor: "#B9BBBE"
-    property string iconHoveredColor: "#DCDDDE"
+    property color iconColor: "#B9BBBE"
+    property color iconHoveredColor: "#DCDDDE"
     property string icon: "\uf002"
     property string toolTip: "tip"
     property int pointSize: 12

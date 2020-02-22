@@ -16,5 +16,13 @@
         <file>qml/pages/AlbumsPage.qml</file>
         <file>qml/baseComponents/NCopyField.qml</file>
         <file>qml/baseComponents/AlbumNewItem.qml</file>
+        <file>qml/pages/AlbumPage.qml</file>
+        <file>qml/baseComponents/FolderListItem.qml</file>
+        <file>qml/baseComponents/ImageListItem.qml</file>
+        <file>qml/baseComponents/NMenuItem.qml</file>
+        <file>qml/baseComponents/NChat.qml</file>
+        <file>qml/baseComponents/NToolBar.qml</file>
+        <file>qml/baseComponents/NMainToolBar.qml</file>
+        <file>qml/baseComponents/NToolButtonIndicator.qml</file>
     </qresource>
 </RCC>
