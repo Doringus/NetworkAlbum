@@ -1,12 +1,13 @@
 #pragma once
 
-#include <memory>
+#include <QSharedPointer>
 
 class Action;
 
 class Store {
 public:
-    virtual void process(const std::shared_ptr<Action>& action) = 0;
+    virtual ~Store() = default;
+    virtual void process(const QSharedPointer<Action>& action) = 0;
 protected:
     Store() = default;
 };

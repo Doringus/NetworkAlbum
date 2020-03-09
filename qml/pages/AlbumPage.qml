@@ -1,11 +1,43 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import Qt.labs.folderlistmodel 2.14
+import QtQml.Models 2.14
 
 import "../baseComponents"
+import NetworkAlbum 1.0
 
 Page {
-    header: NToolBar {}
+    header: NToolBar {
+        pageTitle: MainStore.albumPageTitle
+        onBackButtonClicked: {
+            if(MainStore.albumUrl.toString().toLowerCase() === folderModel.folder.toString().toLowerCase()) {
+                parent.StackView.view.pop()
+            } else {
+                ActionProvider.openFolder(folderModel.parentFolder)
+            }
+        }
+    }
+    property var imagesModel
+
+    Popup {
+        id: imageViewPopup
+        width: height * 1.7
+        height: parent.height - 200
+        anchors.centerIn: parent
+        modal: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        contentItem: Image {
+            anchors.fill: parent
+            source: MainStore.imageUrl
+            sourceSize.width: width
+            sourceSize.height: height
+            asynchronous: true
+        }
+        visible: MainStore.showImagePopup
+        onAboutToHide: ActionProvider.hideImagePopup()
+    }
+
     Item {
         id: root
         anchors.fill: parent
@@ -75,11 +107,20 @@ Page {
                 flow: GridView.LeftToRight
                 snapMode: GridView.SnapToRow
                 cacheBuffer: 0
-                model: gridmodel
+                model: FolderListModel {
+                    id: folderModel
+                    showDirs: true
+                    showFiles: false
+                    folder: MainStore.currentFolderUrl
+                    rootFolder: MainStore.albumUrl                    
+                }
                 cellHeight: 60
                 cellWidth: 220
                 delegate: FolderListItem {
-
+                    folderName: model.fileBaseName
+                    onClicked: {
+                        ActionProvider.openFolder(folderModel.get(index, "fileURL"))
+                    }
                 }
             }
             Text {
@@ -106,38 +147,21 @@ Page {
                 flow: GridView.LeftToRight
                 snapMode: GridView.SnapToRow
                 cacheBuffer: 0
-                model: gridmodel
+                model: FolderListModel {
+                    showDirs: false
+                    folder: MainStore.currentFolderUrl
+                    rootFolder: MainStore.albumUrl
+                }
                 cellHeight: 220
                 cellWidth: 220
                 delegate: ImageListItem {
-
+                    imagePath: model.fileURL
+                    imageName: model.fileBaseName
+                    onClicked: {
+                        ActionProvider.openImagePopup(imagePath)
+                    }
                 }
             }
-        }
-
-        ListModel {
-            id: gridmodel
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-            ListElement{}
-
         }
     }
 }

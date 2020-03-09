@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QQueue>
+#include <QSharedPointer>
 
 #include "action.h"
 
@@ -16,15 +17,17 @@ public:
     Dispatcher& operator=(const Dispatcher&) = delete;
 
     static Dispatcher& get() {
-        return m_Instance;
+        static Dispatcher instance;
+        return instance;
     }
 
-    void addStore();
-    void addMiddleware();
+    void addStore(QSharedPointer<Store> store);
+    void addMiddleware(QSharedPointer<Middleware> middleware);
 
     template<class... Args>
     void dispatch(Args&&... args) {
-        m_Actions.enqueue(std::make_shared<Action>(std::forward<Args>(args)...));
+        m_Actions.enqueue(QSharedPointer<Action>(std::forward<Args>(args)...));
+        emit newAction();
     }
 
 signals:
@@ -32,11 +35,11 @@ signals:
 
 private:
     Dispatcher();
+    ~Dispatcher() = default;
     void handleAction();
 private:
-    static Dispatcher m_Instance;
-    QQueue<std::shared_ptr<Action>> m_Actions;
-    QVector<std::shared_ptr<Store>> m_Stores;
-    QVector<std::shared_ptr<Middleware>> m_Middlewares;
+    QQueue<QSharedPointer<Action>> m_Actions;
+    QVector<QSharedPointer<Store>> m_Stores;
+    QVector<QSharedPointer<Middleware>> m_Middlewares;
 };
 

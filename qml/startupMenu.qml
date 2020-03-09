@@ -2,6 +2,7 @@ import QtQuick 2.13
 import QtQuick.Controls 2.12
 
 import "baseComponents"
+import NetworkAlbum 1.0
 
 Item {
     id: element
@@ -11,19 +12,6 @@ Item {
     Rectangle {
         anchors.fill: parent
         color: "#252526"
-    }
-
-    CreateAlbumPopup {
-        id: createAlbumPopup
-        enter: Transition {
-            NumberAnimation {
-                property: "opacity"
-                easing.type: Easing.InOutQuad;
-                from: 0.2
-                to: 1.0
-            }
-        }
-        onCreated: element.openServer()
     }
 
     Label {
@@ -56,7 +44,7 @@ Item {
         btnSubText: "Выберите существующую папку, чтобы поделиться ее содержимым"
         btnIcon: "\uf1e0"
         onClicked: {
-            createAlbumPopup.open()
+            ActionProvider.openCreateSessionPopup()
         }
     }
 

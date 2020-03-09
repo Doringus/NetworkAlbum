@@ -3,9 +3,12 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 import "../baseComponents"
-
+import NetworkAlbum 1.0
 Page {
     header: NMainToolBar{}
+    property var albumsModel
+    signal openAlbum()
+
     Item {
         id: root
         anchors.fill: parent
@@ -64,7 +67,7 @@ Page {
             flow: GridView.LeftToRight
             snapMode: GridView.SnapToRow
             cacheBuffer: 0
-            model: 20
+            model: albumsModel
             cellHeight: 240
             cellWidth: 360
             ScrollBar.vertical: ScrollBar {
@@ -78,15 +81,23 @@ Page {
             }
             header: Rectangle {
                 width: 350
-                height: 240
+                height: 260
                 color: "transparent"
                 AlbumNewItem {
                     anchors.verticalCenter: parent.verticalCenter
+                    onClicked: ActionProvider.openCreateSessionPopup()
                 }
             }
             delegate: AlbumListItem {
+                albumName: model.albumName
+                imagePath: model.titleImage
+                onOpened: {
+                    ActionProvider.openAlbum(index)
+                    openAlbum()
+                }
                 onClicked: {
-                    codePopup.open()
+                    ActionProvider.openAlbum(index)
+                    openAlbum()
                 }
             }
         }

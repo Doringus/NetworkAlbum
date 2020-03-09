@@ -4,6 +4,14 @@
 #include "middleware.h"
 
 
+void Dispatcher::addStore(QSharedPointer<Store> store) {
+    m_Stores.append(store);
+}
+
+void Dispatcher::addMiddleware(QSharedPointer<Middleware> middleware) {
+    m_Middlewares.append(middleware);
+}
+
 Dispatcher::Dispatcher() {
     QObject::connect(this, &Dispatcher::newAction, this, [=](){
         this->handleAction();

@@ -1,56 +1,39 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.12
 
-Rectangle {
-    id:rect
-    property string checkedColor: "#2095D0"
-    property string uncheckedColor: "#72767D"
-    property bool isChecked: false
-    signal checkedChanged(bool check)
+Switch {
+    id: control
+    text: qsTr("Switch")
 
-    width: 42
-    height: 25
-    radius: 16
-    color: isChecked ? checkedColor:uncheckedColor
+    indicator: Rectangle {
+        implicitWidth: 48
+        implicitHeight: 26
+        x: control.leftPadding
+        y: parent.height / 2 - height / 2
+        radius: 13
+        color: control.checked ? "#2095D0" : "#72767D"
 
-    Rectangle {
-        id: checkBall
-        width: 18
-        height: 18
-        radius: 9
-        color: "#FFFFFF"
-        anchors.verticalCenter: parent.verticalCenter
-        x: isChecked ? 21:3
-        NumberAnimation on x {
-            running: false
-            id:anim
-            from: 3
-            to: 21
-        }
-        NumberAnimation on x {
-            running: false
-            id:backAnim
-            from: 21
-            to: 3
-        }
-    }
-    MouseArea {
-        id:mouseArea
-        anchors.fill: parent
-        onClicked: {
-            if(rect.isChecked){
-                rect.isChecked = false
-                rect.color = uncheckedColor
-                backAnim.start()
-                checkedChanged(false)
-            } else {
-                rect.isChecked = true
-                rect.color = checkedColor
-                anim.start()
-                checkedChanged(true)
+        Rectangle {
+            x: control.checked ? parent.width - width - 2 : 2
+            y: parent.height / 2 - height / 2
+            width: 22
+            height: 22
+            radius: 11
+            color: "#ffffff"
+            Behavior on x {
+                NumberAnimation {
+                    duration: 100
+                }
             }
         }
     }
 
+    contentItem: Text {
+        text: control.text
+        font: control.font
+        opacity: enabled ? 1.0 : 0.3
+        color: control.down ? "#17a81a" : "#21be2b"
+        verticalAlignment: Text.AlignVCenter
+        leftPadding: control.indicator.width + control.spacing
+    }
 }
-

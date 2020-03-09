@@ -9,8 +9,8 @@ Item {
 
     signal clicked()
 
-    width: 330
-    height: 210
+    width: 300
+    height: 180
 
     states: [
         State {

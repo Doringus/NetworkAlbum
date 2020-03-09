@@ -16,7 +16,7 @@ Item {
             anchors.fill: parent
             anchors.leftMargin: 40
             color: "white"
-            text: "Новый альбом"
+            text: "Альбомы"
             elide: "ElideRight"
             font.weight: Font.DemiBold
             verticalAlignment: Text.AlignVCenter

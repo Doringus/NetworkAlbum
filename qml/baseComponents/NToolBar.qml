@@ -5,6 +5,10 @@ import QtQuick.Layouts 1.12
 Item {
     width: 600
     height: 50
+
+    property alias pageTitle: pageTitleLabel.text
+    signal backButtonClicked()
+
     Rectangle {
         id: componentTitle
         anchors.left: parent.left
@@ -18,13 +22,14 @@ Item {
             anchors.bottom: parent.bottom
             anchors.leftMargin: 10
             icon: "\uf060"
-            onClicked: parent.parent.parent.StackView.view.pop()
+            onClicked: backButtonClicked()//parent.parent.parent.StackView.view.pop()
             toolTip: "Назад"
         }
 
         Label {
+            id: pageTitleLabel
             anchors.fill: parent
-            anchors.leftMargin: 40
+            anchors.leftMargin: 20
             color: "white"
             text: "Новый альбом"
             elide: "ElideRight"

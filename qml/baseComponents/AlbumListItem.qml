@@ -9,6 +9,7 @@ Item {
     property string albumName: "Новый альбом"
 
     signal clicked()
+    signal opened()
 
     width: 330
     height: 210
@@ -36,6 +37,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
+        radius: 28
         color: "transparent"
         Rectangle {
             id: rect
@@ -46,10 +48,16 @@ Item {
 
         Image {
             anchors.fill: parent
+            anchors.bottomMargin: 60
+            anchors.leftMargin: 20
+            anchors.rightMargin: 20
+            anchors.topMargin: 10
             source: imagePath
+            opacity: 0.25
             sourceSize.width: root.width
             sourceSize.height: root.height
         }
+
         Label {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
@@ -81,6 +89,8 @@ Item {
                 anchors.rightMargin: 20
                 icon: "\uf142"
                 toolTip: "Ещё"
+                iconColor: "white"
+                pointSize: 16
                 onClicked: menu.open()
             }
             Menu {
@@ -90,7 +100,7 @@ Item {
                 width: 210
                 topPadding: 10
 
-                Action { text: qsTr("Открыть"); icon.name: "\uf07c"; }
+                Action { text: qsTr("Открыть"); icon.name: "\uf07c"; onTriggered: root.opened()}
                 Action { text: qsTr("Копировать ссылку"); icon.name: "\uf064"; }
                 Action { text: qsTr("Закрыть альбом"); icon.name: "\uf00d";}
 

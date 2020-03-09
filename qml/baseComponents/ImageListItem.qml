@@ -70,6 +70,8 @@ Item {
             sourceSize.width: width
             sourceSize.height: height
             source: imagePath
+            cache: true
+            asynchronous: true
         }
     }
 
