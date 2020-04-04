@@ -19,8 +19,11 @@ public:
     Q_INVOKABLE void openFolder(QUrl folderUrl);
     Q_INVOKABLE void hideCreateSessionPopup();
     Q_INVOKABLE void openCreateSessionPopup();
+    Q_INVOKABLE void showOpenPopup();
+    Q_INVOKABLE void hideOpenPopup();
     Q_INVOKABLE void openImagePopup(QUrl imageUrl);
     Q_INVOKABLE void hideImagePopup();
+    Q_INVOKABLE void connectToAlbum(QString link);
 private:
     ActionProvider() = default;
     ~ActionProvider() = default;

@@ -7,6 +7,7 @@ Item {
     id: root
 
     property string folderName: "FOLDER"
+    property string folderIcon: "\uf07b"
 
     signal clicked()
 
@@ -48,7 +49,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.leftMargin: 10
         font.family: "FontAwesome"
-        text: "\uf07b"
+        text: root.folderIcon
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
         font.pointSize: 18

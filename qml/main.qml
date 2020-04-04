@@ -5,6 +5,7 @@ import Qt.labs.folderlistmodel 2.13
 
 import "pages"
 import "baseComponents"
+import "popups"
 
 import NetworkAlbum 1.0
 
@@ -45,6 +46,15 @@ Window {
         visible: MainStore.showCreatePopup
     }
 
+    OpenAlbumPopup {
+        id: openAlbumPopup
+        visible: MainStore.showOpenPopup
+        errorString: MainStore.errorString
+        onClicked: {
+            ActionProvider.connectToAlbum(link)
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -75,9 +85,6 @@ Window {
     Component {
         id: startupMenu
         StartupMenu {
-            onOpenServer: {
-                stackView.push(albumsPage)
-            }
         }
     }
 

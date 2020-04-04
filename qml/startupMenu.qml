@@ -7,8 +7,6 @@ import NetworkAlbum 1.0
 Item {
     id: element
 
-    signal openServer()
-
     Rectangle {
         anchors.fill: parent
         color: "#252526"
@@ -58,5 +56,8 @@ Item {
         btnTitle: "Открыть альбом"
         btnSubText: "При помощи специального кода, подключайтесь и просматривайте, редактируйте и скачивайте содержимое"
         btnIcon: "\uf08e"
+        onClicked: {
+            ActionProvider.showOpenPopup()
+        }
     }
 }

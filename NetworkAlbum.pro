@@ -1,4 +1,4 @@
-QT += quick quickcontrols2 qml widgets
+QT += quick quickcontrols2 qml widgets concurrent
 
 CONFIG += c++17
 
@@ -17,9 +17,20 @@ SOURCES += \
         src/action/actionprovider.cpp \
         src/albumslistmodel.cpp \
         src/base/dispatcher.cpp \
+        src/core.cpp \
+        src/imageconverter.cpp \
         src/main.cpp \
+        src/middleware/clientnetworkaccessmiddleware.cpp \
+        src/middleware/networkaccessmiddleware.cpp \
         src/middleware/sessionfactory.cpp \
+        src/network/albumclient.cpp \
+        src/network/albumlinkfactory.cpp \
+        src/network/server.cpp \
+        src/network/serverconnection.cpp \
+        src/network/tcpconnection.cpp \
+        src/network/worker.cpp \
         src/session.cpp \
+        src/store/clientstore.cpp \
         src/store/linkstore.cpp \
         src/store/mainstore.cpp
 
@@ -44,8 +55,19 @@ HEADERS += \
     src/base/dispatcher.h \
     src/base/middleware.h \
     src/base/store.h \
+    src/core.h \
+    src/imageconverter.h \
+    src/middleware/clientnetworkaccessmiddleware.h \
+    src/middleware/networkaccessmiddleware.h \
     src/middleware/sessionfactory.h \
-    src/service/sessionfactory.h \
+    src/network/albumclient.h \
+    src/network/albumlinkfactory.h \
+    src/network/networkactiontypes.h \
+    src/network/server.h \
+    src/network/serverconnection.h \
+    src/network/tcpconnection.h \
+    src/network/worker.h \
     src/session.h \
+    src/store/clientstore.h \
     src/store/linkstore.h \
     src/store/mainstore.h

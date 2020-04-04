@@ -2,8 +2,13 @@
 
 #include "../base/action.h"
 #include "../action/actiontypes.h"
+#include "../base/dispatcher.h"
+#include "../imageconverter.h"
 
 #include <QDir>
+#include <QtConcurrent>
+#include <QFutureWatcher>
+#include <QVariant>
 
 MainStore::MainStore() {
     m_AlbumPageTitle = "#TITLE";
@@ -29,6 +34,15 @@ void MainStore::process(const QSharedPointer<Action> &action) {
             processShowError("");
             break;
         }
+        case ActionType::OPEN_CONNECT_POPUP: {
+            processShowOpenPopup();
+            break;
+        }
+        case ActionType::HIDE_CONNECT_POPUP: {
+            processHideOpenPopup();
+            processShowError("");
+            break;
+        }
         case ActionType::OPEN_ALBUM: {
             processOpenAlbum(action->getData<int>());
             break;
@@ -45,12 +59,26 @@ void MainStore::process(const QSharedPointer<Action> &action) {
             processHideImagePopup();
             break;
         }
-
+        case ActionType::CONNECT_TO_ALBUM: {
+            if(action->hasError()) {
+                processShowError(action->getErrorString());
+            } else {
+                processShowError("");
+            }
+            break;
+        }
+        case ActionType::CLIENT_CONNECTED: {
+           processSendImages(action->getData<networkMessage_t>());
+        }
     }
 }
 
 bool MainStore::getShowCreatePopup() {
     return m_ShowCreatePopup;
+}
+
+bool MainStore::getShowOpenPopup() {
+    return m_ShowOpenPopup;
 }
 
 QAbstractListModel *MainStore::getAlbumsModel() {
@@ -91,7 +119,24 @@ void MainStore::processHideCreatePopup() {
     emit showCreatePopupChanged();
 }
 
+void MainStore::processShowOpenPopup() {
+    m_ShowOpenPopup = true;
+    emit showOpenPopupChanged();
+}
+
+void MainStore::processHideOpenPopup() {
+    m_ShowOpenPopup = false;
+    emit showOpenPopupChanged();
+}
+
 void MainStore::processCreateAlbum(Session session) {
+    if(m_Sessions.contains(session)) {
+        processShowError("Папка уже используется!");
+        return;
+    }
+    if(m_Sessions.size() == 0) {
+        Dispatcher::get().dispatch(new Action(ActionType::START_SERVER));
+    }
     QDir albumDir(session.getAlbumPath().toLocalFile());
     QFileInfoList files = albumDir.entryInfoList({"*.jpg", "*.png"});
     QUrl titleImageUrl;
@@ -135,5 +180,27 @@ void MainStore::processHideImagePopup() {
 void MainStore::processShowError(QString errorString) {
     m_ErrorString = errorString;
     emit errorStringChanged();
+}
+
+void MainStore::processSendImages(networkMessage_t message) {
+    qDebug() << "Starting image sending process" << message.clientLink << message.workerIndex;
+    auto it = std::find_if(m_Sessions.begin(), m_Sessions.end(), [=](Session session){
+        return session.getLink() == message.clientLink;
+    });
+    if(it != m_Sessions.end()) {
+        qDebug() << "Session found";
+        qDebug() << it->getAlbumPath().path();
+        QDir albumDir(it->getAlbumPath().toLocalFile());
+        QFileInfoList paths = albumDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
+        ImageConventer scaler;
+        QFuture future = scaler.scaleAndConvertImages(paths, QSize(100, 100));
+        QFutureWatcher<QList<QJsonObject>> *watcher = new QFutureWatcher<QList<QJsonObject>>();
+        connect(watcher, &QFutureWatcher<QList<QJsonValue>>::finished, [message, future]() mutable {
+            QList<QJsonObject> scaledImages = future.result();
+            message.data = QVariant::fromValue<QList<QJsonObject>>(scaledImages);
+            Dispatcher::get().dispatch(new Action(ActionType::SEND_IMAGES, QVariant::fromValue(message)));
+        });
+        watcher->setFuture(future);
+    }
 }
 

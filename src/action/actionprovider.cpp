@@ -23,10 +23,22 @@ void ActionProvider::openCreateSessionPopup() {
     Dispatcher::get().dispatch(new Action(ActionType::OPEN_CREATION_POPUP));
 }
 
+void ActionProvider::showOpenPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::OPEN_CONNECT_POPUP));
+}
+
+void ActionProvider::hideOpenPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_CONNECT_POPUP));
+}
+
 void ActionProvider::openImagePopup(QUrl imageUrl) {
     Dispatcher::get().dispatch(new Action(ActionType::OPEN_IMAGE_POPUP, imageUrl));
 }
 
 void ActionProvider::hideImagePopup() {
     Dispatcher::get().dispatch(new Action(ActionType::HIDE_IMAGE_POPUP));
+}
+
+void ActionProvider::connectToAlbum(QString link) {
+    Dispatcher::get().dispatch(new Action(ActionType::CONNECT_TO_ALBUM, link));
 }

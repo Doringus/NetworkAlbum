@@ -12,7 +12,6 @@ Item {
     width: 200
     height: 200
 
-
     states: [
         State {
             name: "Hovering"
@@ -34,10 +33,16 @@ Item {
     }
 
     Rectangle {
+        id: backgroundRect
         anchors.fill: parent
         color: "transparent"
         border.color: "#202225"
         radius: 8
+        Drag.active: area.drag.active
+        Drag.hotSpot.x: 0
+        Drag.hotSpot.y: 0
+        Drag.mimeData: { "text/plain": item.display }
+        Drag.dragType: Drag.Automatic
     }
 
     Rectangle {
@@ -66,6 +71,7 @@ Item {
         radius: 8
         color: "transparent"
         Image {
+            id: image
             anchors.fill: parent
             sourceSize.width: width
             sourceSize.height: height
@@ -75,6 +81,12 @@ Item {
         }
     }
 
+    Rectangle{
+        id: test
+        width: 50
+        height: 50
+       // visible: false
+    }
 
     MouseArea {
         id: area
@@ -83,6 +95,13 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onEntered: { root.state='Hovering'}
         onExited: { root.state=''}
+        drag.target: backgroundRect
+        onPressed: {
+            test.grabToImage(function(result) {
+                            backgroundRect.Drag.imageSource = result.url
+                        })
+        }
+
         onClicked: {
             root.clicked()
         }

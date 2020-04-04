@@ -101,7 +101,7 @@ Page {
                 anchors.right: parent.right
                 anchors.top: folderText.bottom
                 anchors.topMargin: 20
-                height: Math.ceil(model.count / Math.floor(width / cellWidth)) * cellHeight
+                height: Math.ceil(model.count / Math.floor(width / cellWidth)) * cellHeight + 80
                 interactive: false
                 boundsBehavior: Flickable.StopAtBounds
                 flow: GridView.LeftToRight
@@ -116,6 +116,17 @@ Page {
                 }
                 cellHeight: 60
                 cellWidth: 220
+                header: Rectangle {
+                    width: 200
+                    height: 80
+                    color: "transparent"
+                    FolderListItem {
+                        anchors.verticalCenter: parent.verticalCenter
+                        folderName: "Создать"
+                        folderIcon: "\uf067"
+                    }
+                }
+
                 delegate: FolderListItem {
                     folderName: model.fileBaseName
                     onClicked: {

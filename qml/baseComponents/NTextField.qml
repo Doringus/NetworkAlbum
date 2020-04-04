@@ -4,7 +4,7 @@ import QtQuick.Controls 2.12
 TextField {
     id: root
 
-    property bool hasError: true
+    property bool hasError: false
 
     height: 40
     font.pointSize: 16

@@ -10,38 +10,15 @@
 #include "action/actionprovider.h"
 #include "store/mainstore.h"
 #include "middleware/sessionfactory.h"
-
-enum class a {
-    SAS,
-    VAS
-};
+#include "core.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QVariant v;
-    Action action(a::SAS, v);
     QGuiApplication app(argc, argv);
-    QFontDatabase font;
-    if(font.addApplicationFont(":/res/fonts/fontawesome-webfont.ttf") == -1) {
-            qWarning() << "Failed to load font";
-    }
-    SessionFactory sessionFactory;
     QQmlApplicationEngine engine;
+    Core core;
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
-    qmlRegisterType<LinkStore>("NetworkAlbum", 1, 0, "LinkStore");
-    qmlRegisterSingletonType<ActionProvider>("NetworkAlbum", 1, 0, "ActionProvider",
-                                             [](QQmlEngine *engine, QJSEngine *jsEngine) -> QObject* {
-        QQmlEngine::setObjectOwnership(&ActionProvider::get(), QQmlEngine::CppOwnership);
-        return &ActionProvider::get();
-    });
-    qmlRegisterSingletonType<ActionProvider>("NetworkAlbum", 1, 0, "MainStore",
-                                             [](QQmlEngine *engine, QJSEngine *jsEngine) -> QObject* {
-        QQmlEngine::setObjectOwnership(&MainStore::get(), QQmlEngine::CppOwnership);
-        return &MainStore::get();
-    });
-    Dispatcher::get().addStore(QSharedPointer<MainStore>(&MainStore::get(), [](MainStore*){}));
-    Dispatcher::get().addMiddleware(QSharedPointer<SessionFactory>(&sessionFactory, [](SessionFactory*){}));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)

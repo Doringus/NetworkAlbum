@@ -8,11 +8,13 @@
 #include "../base/store.h"
 #include "../session.h"
 #include "../albumslistmodel.h"
+#include "../network/networkactiontypes.h"
 
 class MainStore : public QObject, public Store {
     Q_OBJECT
 public:
     Q_PROPERTY(bool showCreatePopup READ getShowCreatePopup NOTIFY showCreatePopupChanged)
+    Q_PROPERTY(bool showOpenPopup READ getShowOpenPopup NOTIFY showOpenPopupChanged)
     Q_PROPERTY(QAbstractListModel* albumsModel READ getAlbumsModel NOTIFY albumsModelChanged)
     Q_PROPERTY(QUrl albumUrl READ getAlbumUrl NOTIFY albumUrlChanged)
     Q_PROPERTY(QUrl currentFolderUrl READ getCurrentFolderUrl NOTIFY currentFolderUrlChanged)
@@ -32,6 +34,7 @@ public:
     void process(const QSharedPointer<Action>& action);
 
     bool getShowCreatePopup();
+    bool getShowOpenPopup();
     QString getErrorText();
     QAbstractListModel* getAlbumsModel();
     QUrl getAlbumUrl();
@@ -42,6 +45,7 @@ public:
     QString getErrorString();
 signals:
     void showCreatePopupChanged();
+    void showOpenPopupChanged();
     void albumsModelChanged();
     void albumUrlChanged();
     void currentFolderUrlChanged();
@@ -57,17 +61,20 @@ private:
 
     void processShowCreatePopup();
     void processHideCreatePopup();
+    void processShowOpenPopup();
+    void processHideOpenPopup();
     void processCreateAlbum(Session session);
     void processOpenAlbum(int index);
     void processOpenFolder(QUrl folder);
     void processOpenImagePopup(QUrl imageUrl);
     void processHideImagePopup();
     void processShowError(QString errorString);
+    void processSendImages(networkMessage_t message);
 private:
     AlbumsListModel m_Albums;
     QList<Session> m_Sessions;
     QUrl m_CurrentAlbumUrl, m_CurrentFolderUrl, m_ImageUrl;
     QString m_AlbumPageTitle, m_ErrorString;
-    bool m_ShowCreatePopup, m_ShowImagePopup;
+    bool m_ShowCreatePopup, m_ShowOpenPopup, m_ShowImagePopup;
 };
 

@@ -4,7 +4,6 @@
         <file>res/fonts/fontawesome-webfont.ttf</file>
         <file>qml/baseComponents/MenuButton.qml</file>
         <file>qml/StartupMenu.qml</file>
-        <file>qml/baseComponents/CreateAlbumPopup.qml</file>
         <file>qml/baseComponents/NTextField.qml</file>
         <file>qml/baseComponents/NButton.qml</file>
         <file>qml/baseComponents/NToggleButton.qml</file>
@@ -24,5 +23,7 @@
         <file>qml/baseComponents/NToolBar.qml</file>
         <file>qml/baseComponents/NMainToolBar.qml</file>
         <file>qml/baseComponents/NToolButtonIndicator.qml</file>
+        <file>qml/popups/CreateAlbumPopup.qml</file>
+        <file>qml/popups/OpenAlbumPopup.qml</file>
     </qresource>
 </RCC>

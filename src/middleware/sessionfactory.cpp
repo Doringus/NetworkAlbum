@@ -29,13 +29,7 @@ QSharedPointer<Action> SessionFactory::process(const QSharedPointer<Action>& act
 }
 
 Session SessionFactory::processCreateSession(QList<QVariant> data) {
-    /*
-     * create link here and validate data
-     */
-    if(data.at(0).toUrl().isEmpty()) {
-
-    }
-    Session session(data.at(0).toUrl(), data.at(1).toBool(), data.at(2).toDouble());
+    Session session(data.at(0).toUrl(), data.at(1).toBool(), data.at(2).toDouble(), "");
     return session;
 }
 

@@ -25,6 +25,10 @@ public:
         m_Data = data;
     }
 
+    void setData(const QVariant& data) {
+        m_Data = data;
+    }
+
     template<class E, class = typename std::enable_if<std::is_enum<E>::value>::type>
     E getType() const {
         return static_cast<E>(m_Type);
