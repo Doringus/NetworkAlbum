@@ -52,6 +52,7 @@ Window {
         errorString: MainStore.errorString
         onClicked: {
             ActionProvider.connectToAlbum(link)
+            stackView.push(clientAlbumPage)
         }
     }
 
@@ -72,6 +73,12 @@ Window {
             onOpenAlbum: {
                 stackView.push(albumPage)
             }
+        }
+    }
+    Component {
+        id: clientAlbumPage
+        ClientAlbumPage {
+
         }
     }
 

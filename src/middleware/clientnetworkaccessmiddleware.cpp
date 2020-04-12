@@ -2,14 +2,16 @@
 
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 #include "../action/actiontypes.h"
 #include "../base/action.h"
 #include "../network/networkactiontypes.h"
+#include "../base/dispatcher.h"
 
 ClientNetworkAccessMiddleware::ClientNetworkAccessMiddleware(QObject *parent) : QObject(parent) {
     m_ServerConnection = new ServerConnection(this);
-    connect(m_ServerConnection, &ServerConnection::messageReady, this, &ClientNetworkAccessMiddleware::onRecieveMessage);
+    connect(m_ServerConnection, &TcpConnection::messageReady, this, &ClientNetworkAccessMiddleware::onRecieveMessage);
 }
 
 QSharedPointer<Action> ClientNetworkAccessMiddleware::process(const QSharedPointer<Action> &action) {
@@ -23,7 +25,9 @@ QSharedPointer<Action> ClientNetworkAccessMiddleware::process(const QSharedPoint
 }
 
 void ClientNetworkAccessMiddleware::onRecieveMessage(QString message) {
-
+    QJsonObject obj = QJsonDocument::fromJson(message.toUtf8()).object();
+    QJsonArray images = obj.value("Images").toArray();
+    Dispatcher::get().dispatch(new Action(ActionType::IMAGES_RECIEVED, QVariant::fromValue<QJsonObject>(obj)));
 }
 
 void ClientNetworkAccessMiddleware::processConnectToAlbum(QString link) {

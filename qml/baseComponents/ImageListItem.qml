@@ -4,10 +4,14 @@ import QtQuick.Layouts 1.12
 
 Item {
     id: root
-    property url imagePath: "pics/logo.png"
+   // property url imagePath: "pics/logo.png"
+    property alias imagePath: image.source
     property string imageName: "IMAGENAME"
+    property bool selected: false
 
     signal clicked()
+    signal doubleClicked()
+    signal ctrlClicked()
 
     width: 200
     height: 200
@@ -17,7 +21,7 @@ Item {
             name: "Hovering"
             PropertyChanges {
                 target: titleRect
-                color: "#18191C"
+                color: root.selected ? "#40A7E3" : "#18191C"
             }
         }
     ]
@@ -38,10 +42,10 @@ Item {
         color: "transparent"
         border.color: "#202225"
         radius: 8
-        Drag.active: area.drag.active
+        Drag.active: area.drag.active && selected
         Drag.hotSpot.x: 0
         Drag.hotSpot.y: 0
-        Drag.mimeData: { "text/plain": item.display }
+        Drag.mimeData: { "text/plain": "test"/*item.display */}
         Drag.dragType: Drag.Automatic
     }
 
@@ -52,7 +56,7 @@ Item {
         anchors.bottom: parent.bottom
         height: 65
         radius: 8
-        color: "#202225"
+        color: root.selected ? "#2095D0" : "#202225"
         Text {
             anchors.fill: parent
             font.pointSize: 14
@@ -75,7 +79,6 @@ Item {
             anchors.fill: parent
             sourceSize.width: width
             sourceSize.height: height
-            source: imagePath
             cache: true
             asynchronous: true
         }
@@ -99,11 +102,18 @@ Item {
         onPressed: {
             test.grabToImage(function(result) {
                             backgroundRect.Drag.imageSource = result.url
-                        })
+            })
         }
 
         onClicked: {
-            root.clicked()
+            if ((mouse.button == Qt.LeftButton) && (mouse.modifiers & Qt.ControlModifier)) {
+                root.ctrlClicked()
+            } else {
+                root.clicked()
+            }
+        }
+        onDoubleClicked: {
+            root.doubleClicked()
         }
     }
 

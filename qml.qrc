@@ -25,5 +25,11 @@
         <file>qml/baseComponents/NToolButtonIndicator.qml</file>
         <file>qml/popups/CreateAlbumPopup.qml</file>
         <file>qml/popups/OpenAlbumPopup.qml</file>
+        <file>qml/pages/ClientAlbumPage.qml</file>
+        <file>qml/baseComponents/NClientToolBar.qml</file>
+        <file>qml/popups/CreateFolderPopup.qml</file>
+        <file>qml/popups/MovePopup.qml</file>
+        <file>qml/baseComponents/NFolderItem.qml</file>
+        <file>qml/popups/RenamePopup.qml</file>
     </qresource>
 </RCC>

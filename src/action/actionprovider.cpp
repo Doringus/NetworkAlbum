@@ -42,3 +42,63 @@ void ActionProvider::hideImagePopup() {
 void ActionProvider::connectToAlbum(QString link) {
     Dispatcher::get().dispatch(new Action(ActionType::CONNECT_TO_ALBUM, link));
 }
+
+void ActionProvider::createFolder(QString folderName) {
+    Dispatcher::get().dispatch(new Action(ActionType::CREATE_FOLDER, folderName));
+}
+
+void ActionProvider::showCreateFolderPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_CREATE_FOLDER_POPUP));
+}
+
+void ActionProvider::hideCreateFolderPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_CREATE_FOLDER_POPUP));
+}
+
+void ActionProvider::selectFile(QUrl url) {
+    Dispatcher::get().dispatch(new Action(ActionType::SELECT_FILE, url));
+}
+
+void ActionProvider::deselectFiles() {
+    Dispatcher::get().dispatch(new Action(ActionType::DESELECT_FILES));
+}
+
+void ActionProvider::clearAllAndSelectFile(QUrl url) {
+    Dispatcher::get().dispatch(new Action(ActionType::CLEAR_AND_SELECT_FILES, url));
+}
+
+void ActionProvider::deselectFile(QUrl url) {
+    Dispatcher::get().dispatch(new Action(ActionType::DESELECT_FILE, url));
+}
+
+void ActionProvider::changeMoveDir(QUrl url) {
+    Dispatcher::get().dispatch(new Action(ActionType::CHANGE_MOVE_DIR, url));
+}
+
+void ActionProvider::moveFiles(QUrl dest) {
+    Dispatcher::get().dispatch(new Action(ActionType::MOVE_FILES, dest));
+}
+
+void ActionProvider::showMovePopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_MOVE_POPUP));
+}
+
+void ActionProvider::hideMovePopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_MOVE_POPUP));
+}
+
+void ActionProvider::renameFile(QString name) {
+    Dispatcher::get().dispatch(new Action(ActionType::RENAME_FILE, name));
+}
+
+void ActionProvider::showRenamePopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_RENAME_POPUP));
+}
+
+void ActionProvider::hideRenamePopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_RENAME_POPUP));
+}
+
+void ActionProvider::deleteFiles() {
+    Dispatcher::get().dispatch(new Action(ActionType::DELETE_FILES));
+}

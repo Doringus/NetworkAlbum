@@ -8,8 +8,11 @@ Item {
 
     property string folderName: "FOLDER"
     property string folderIcon: "\uf07b"
+    property bool selected: false
 
     signal clicked()
+    signal doubleClicked()
+    signal ctrlClicked()
 
     width: 200
     height: 50
@@ -38,7 +41,7 @@ Item {
         id: rect
         anchors.fill: parent
         color: "#292B2F"
-        border.color: "#202225"
+        border.color: selected ? "#2095D0" : "#202225"
         radius: 8
     }
 
@@ -78,7 +81,14 @@ Item {
         onEntered: { root.state='Hovering'}
         onExited: { root.state=''}
         onClicked: {
-            root.clicked()
+            if ((mouse.button == Qt.LeftButton) && (mouse.modifiers & Qt.ControlModifier)) {
+                root.ctrlClicked()
+            } else {
+                root.clicked()
+            }
+        }
+        onDoubleClicked: {
+            root.doubleClicked()
         }
     }
 }

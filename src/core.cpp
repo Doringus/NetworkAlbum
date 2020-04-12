@@ -41,6 +41,7 @@ Core::Core(QObject *parent) : QObject(parent) {
         Q_UNUSED(jsEngine)
     });
     Dispatcher::get().addStore(QSharedPointer<MainStore>(&MainStore::get(), [](MainStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<ClientStore>(&ClientStore::get(), [](ClientStore*){}));
     /// \warning Dont change the middlewares registration order
     Dispatcher::get().addMiddleware(QSharedPointer<SessionFactory>(m_SessionFactory, [](SessionFactory*){}));
     Dispatcher::get().addMiddleware(QSharedPointer<NetworkAccessMiddleware>(m_NetworkAccessMiddleware, [](NetworkAccessMiddleware*){}));
