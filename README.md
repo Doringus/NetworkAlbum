@@ -22,7 +22,7 @@ Completed features
 - All image manipulations on client: renaming, moving in folders
 - Sending changes on server
 
-In progres
+In progress
 ==========
 - Saving images after synchronizing in different folder (if option is on)
 - Settings page
