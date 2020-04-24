@@ -1,5 +1,6 @@
 # NetworkAlbum OmSTU training task
 Network album - simple client/server desktop application for sharing photos. Application based on flux architecture
+
 Flux
 ====
 ![alt text](https://i.imgur.com/oHZ6yCi.png)
