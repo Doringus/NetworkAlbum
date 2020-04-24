@@ -8,8 +8,11 @@ Item {
     width: 320
     height: 600
 
+    property var chatModel
     property color otherMessageColor: "#182533"
     property color mineMessageColor: "#2B5278"
+
+    signal messageWritten(string message)
 
     Rectangle {
         anchors.fill: parent
@@ -27,23 +30,25 @@ Item {
         verticalLayoutDirection: ListView.BottomToTop
         boundsBehavior: Flickable.StopAtBounds
         spacing: 12
-        model: 10
+        model: chatModel
 
         delegate: Rectangle {
-            anchors.right: parent.right
+            anchors.right: model.owner ? parent.right : undefined
+            anchors.left:  model.owner ? undefined : parent.left
             anchors.rightMargin: 10
-            width: Math.min(message.implicitWidth + 20, chatList.width / 4 * 3)
+            anchors.leftMargin: 10
+            width: Math.min(message.implicitWidth + 40, chatList.width / 4 * 3)
             height: message.implicitHeight + 20
-            color: mineMessageColor
+            color: model.owner ? mineMessageColor : "#FFFFFF"
             radius: 8
             Label {
                 id: message
                 anchors.fill: parent
                 anchors.margins: 12
-                color: "white"
+                color: model.owner ? "white" : "black"
                 font.pointSize: 11
                 wrapMode: Label.Wrap
-                text: "TESTTESTTEESTTESTESTESTESTEST"
+                text: model.message
             }
         }
 
@@ -82,7 +87,10 @@ Item {
                 color: "white"
                 wrapMode: TextArea.Wrap
                 selectByMouse: true
-                Keys.onReturnPressed: {}
+                Keys.onReturnPressed: {
+                    messageWritten(text)
+                    text = ""
+                }
             }
         }
     }

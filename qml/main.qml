@@ -16,17 +16,25 @@ Window {
     title: qsTr("Album")
 
     Connections {
-        target: MainStore
+        target: RootStore
         onSessionCreated: {
             ActionProvider.hideCreateSessionPopup();
             stackView.push(albumsPage)
         }
     }
 
+    Connections {
+        target: ClientStore
+        onConnectedToAlbum: {
+            ActionProvider.hideOpenPopup()
+            stackView.push(clientAlbumPage)
+        }
+    }
+
     CreateAlbumPopup {
         id: createAlbumPopup
 
-        errorString: MainStore.errorString
+        errorString: RootStore.errorString
 
         enter: Transition {
             NumberAnimation {
@@ -41,18 +49,19 @@ Window {
         }
         onCreated: {
             ActionProvider.createSession(albumUrl, hasReserveFolder, imageScale)
-            popStackView()
         }
-        visible: MainStore.showCreatePopup
+        visible: RootStore.showCreatePopup
     }
 
     OpenAlbumPopup {
         id: openAlbumPopup
-        visible: MainStore.showOpenPopup
-        errorString: MainStore.errorString
+        visible: RootStore.showOpenPopup
+        errorString: RootStore.errorString
         onClicked: {
-            ActionProvider.connectToAlbum(link)
-            stackView.push(clientAlbumPage)
+            ActionProvider.connectToAlbum(link, scaled)
+        }
+        onAboutToHide: {
+            ActionProvider.hideOpenPopup()
         }
     }
 
@@ -69,7 +78,7 @@ Window {
     Component {
         id: albumsPage
         AlbumsPage {
-            albumsModel: MainStore.albumsModel
+            albumsModel: AlbumsStore.albumsModel
             onOpenAlbum: {
                 stackView.push(albumPage)
             }
@@ -85,7 +94,7 @@ Window {
     Component {
         id: albumPage
         AlbumPage {
-            imagesModel: MainStore.albumImagesModel
+
         }
     }
 

@@ -8,11 +8,17 @@
 
 #include "../base/action.h"
 #include "../action/actiontypes.h"
+#include "../base/dispatcher.h"
 
 void ClientStore::process(const QSharedPointer<Action> &action) {
     switch (action->getType<ActionType>()) {
-        case ActionType::IMAGES_RECIEVED: {
-            processRecieveImages(action->getData<QJsonObject>());
+        case ActionType::IMAGES_RECEIVED: {
+            if(action->getErrorString() == "") {
+                processReceiveImages(action->getData<QJsonObject>());
+            } else {
+                processShowError(action->getErrorString());
+            }
+
             break;
         }
         case ActionType::CREATE_FOLDER: {
@@ -85,7 +91,23 @@ void ClientStore::process(const QSharedPointer<Action> &action) {
             processDeleteFiles();
             break;
         }
+        case ActionType::SYNC_IMAGES: {
+            processSyncImages();
+            break;
+        }
+        case ActionType::BEGIN_SEND_MESSAGE: {
+            processSendMessage(action->getData<QString>());
+            break;
+        }
+        case ActionType::RECEIVE_MESSAGE: {
+            processReceiveMessage(action->getData<QString>());
+            break;
+        }
     }
+}
+
+bool ClientStore::getShowConnectPopup() {
+    return m_ShowConnectPopup;
 }
 
 QUrl ClientStore::getAlbumUrl() {
@@ -132,10 +154,15 @@ bool ClientStore::getShowRenamePopup() {
     return m_ShowRenamePopup;
 }
 
-void ClientStore::processRecieveImages(QJsonObject jsonAlbum) {
-    QJsonArray jsonImages = jsonAlbum.value("Images").toArray();
+QAbstractListModel *ClientStore::getConversationModel() {
+    return &m_Conversation;
+}
+
+void ClientStore::processReceiveImages(const QJsonObject& jsonAlbum) {
+    QJsonArray jsonImages = jsonAlbum.value("MessageValue").toArray();
     QString albumName = "TEST";
     QString folderPath = QDir::currentPath() + "/" + albumName;
+    m_AlbumDir.setPath(QDir::currentPath() + "/" + albumName);
     QDir dir(folderPath);
     if(dir.exists()) {
         dir.removeRecursively();
@@ -155,6 +182,7 @@ void ClientStore::processRecieveImages(QJsonObject jsonAlbum) {
     processChangeMoveDir(m_CurrentAlbumUrl);
     emit albumUrlChanged();
     emit currentFolderUrlChanged();
+    emit connectedToAlbum();
 }
 
 void ClientStore::processCreateFolder(QString folderName) {
@@ -173,17 +201,18 @@ void ClientStore::processCreateFolder(QString folderName) {
         processShowError("Системе не удалось создать папку");
         return;
     }
+    m_CreatedFolders.append(m_AlbumDir.relativeFilePath(folderPath));
     setCreateFolderPopupVisibility(false);
 }
 
-void ClientStore::processOpenFolder(QUrl folderUrl) {
+void ClientStore::processOpenFolder(const QUrl& folderUrl) {
     m_CurrentFolderUrl = folderUrl;
     setFolderName(folderUrl.fileName());
     processClearSelectedUrl();
     emit currentFolderUrlChanged();
 }
 
-void ClientStore::processShowError(QString errorString) {
+void ClientStore::processShowError(const QString& errorString) {
     m_ErrorString = errorString;
     emit errorStringChanged();
 }
@@ -193,22 +222,36 @@ void ClientStore::setCreateFolderPopupVisibility(bool visible) {
     emit showCreateFolderPopupChanged();
 }
 
-void ClientStore::setFolderName(QString folderName) {
+void ClientStore::setFolderName(const QString& folderName) {
     m_FolderName = folderName;
     emit folderNameChanged();
 }
 
-void ClientStore::setFileName(QString albumName) {
+void ClientStore::setFileName(const QString& albumName) {
     m_FileName = albumName;
     emit fileNameChanged();
 }
 
-void ClientStore::setCurrentMoveFolderName(QString name) {
+void ClientStore::setCurrentMoveFolderName(const QString& name) {
     m_CurrentMoveFolderName = name;
     emit currentMoveFolderNameChanged();
 }
 
-void ClientStore::processAddSelectedUrl(QUrl url) {
+void ClientStore::saveChanges(const QString& oldPath, const QString& newPath) {
+    QString oldValue = m_ChangesHistory.value(oldPath, "");
+    if(newPath == oldValue) {
+        m_ChangesHistory.remove(oldPath);
+        return;
+    }
+    if(oldValue != "") {
+        m_ChangesHistory.remove(oldPath);
+        m_ChangesHistory.insert(newPath, oldValue);
+    } else {
+        m_ChangesHistory.insert(newPath, oldPath);
+    }
+}
+
+void ClientStore::processAddSelectedUrl(const QUrl& url) {
     m_SelectedUrls.append(url);
     if(m_SelectedUrls.size() > 1) {
         setFileName(QString::number(m_SelectedUrls.size()) + " Файлов");
@@ -217,7 +260,7 @@ void ClientStore::processAddSelectedUrl(QUrl url) {
     }
 }
 
-void ClientStore::processDeselectFile(QUrl url) {
+void ClientStore::processDeselectFile(const QUrl& url) {
     m_SelectedUrls.removeOne(url);
     if(m_SelectedUrls.size() == 0) {
         setFileName("");
@@ -233,13 +276,13 @@ void ClientStore::processClearSelectedUrl() {
     setFileName("");
 }
 
-void ClientStore::processChangeMoveDir(QUrl url) {
+void ClientStore::processChangeMoveDir(const QUrl& url) {
     m_CurrentMoveFolder = url;
     setCurrentMoveFolderName(url.fileName());
     emit currentMoveFolderChanged();
 }
 
-void ClientStore::processMoveFiles(QUrl dest) {
+void ClientStore::processMoveFiles(const QUrl& dest) {
     if(m_SelectedUrls.contains(dest)) {
         processShowError("Не удалось перенести файлы");
         return;
@@ -250,6 +293,7 @@ void ClientStore::processMoveFiles(QUrl dest) {
             processShowError("Не удалось перенести файлы");
             return;
         }
+        saveChanges(m_AlbumDir.relativeFilePath(url.toLocalFile()), m_AlbumDir.relativeFilePath(dest.toLocalFile() + "/" + url.fileName()));
     }
     processClearSelectedUrl();
     setMovePopupVisibility(false);
@@ -265,7 +309,7 @@ void ClientStore::setRenamePopupVisibility(bool visible) {
     emit showRenamePopupChanged();
 }
 
-void ClientStore::processRenameFile(QString newName) {
+void ClientStore::processRenameFile(const QString& newName) {
     QFileInfo fileInfo(m_SelectedUrls.first().toLocalFile());
     QFile file(m_SelectedUrls.first().toLocalFile());
     if(!file.rename(fileInfo.absolutePath() + "/" + newName)) {
@@ -273,7 +317,8 @@ void ClientStore::processRenameFile(QString newName) {
         return;
     }
     processClearSelectedUrl();
-    processAddSelectedUrl(QUrl::fromLocalFile(fileInfo.absolutePath() + "/" + newName));
+    saveChanges(m_AlbumDir.relativeFilePath(fileInfo.absoluteFilePath()),
+                m_AlbumDir.relativeFilePath(fileInfo.absolutePath() + "/" + newName));
     setRenamePopupVisibility(false);
 }
 
@@ -289,5 +334,29 @@ void ClientStore::processDeleteFiles() {
             file.remove(localPath);
         }
     }
+}
+
+void ClientStore::processSyncImages() {
+    if(m_ChangesHistory.empty()) {
+        return;
+    }
+    QList<QPair<QString, QString>> changes;
+    QHash<QString, QString>::const_iterator it = m_ChangesHistory.constBegin();
+    while (it != m_ChangesHistory.constEnd()) {
+        changes.append({it.key(), it.value()});
+        ++it;
+    }
+    m_ChangesHistory.clear();
+    Dispatcher::get().dispatch(new Action(ActionType::SEND_SYNC_DATA,
+                                          QVariant::fromValue<QList<QPair<QString, QString>>>(changes)));
+}
+
+void ClientStore::processSendMessage(const QString &message) {
+    m_Conversation.add(message, true);
+    Dispatcher::get().dispatch(new Action(ActionType::SEND_MESSAGE, message.trimmed()));
+}
+
+void ClientStore::processReceiveMessage(const QString &message) {
+    m_Conversation.add(message, false);
 }
 

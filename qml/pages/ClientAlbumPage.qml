@@ -24,8 +24,8 @@ Page {
         onRenameButtonClicked: {
             ActionProvider.showRenamePopup()
         }
-        onDeleteButtonClicked: {
-            ActionProvider.deleteFiles()
+        onSendImagesButtonClicked: {
+            ActionProvider.syncImages()
         }
     }
     CreateFolderPopup {
@@ -55,6 +55,8 @@ Page {
         errorString: ClientStore.errorString
         onClicked: {
             ActionProvider.renameFile(fileName)
+            gridFolders.deselectAll()
+            gridImages.deselectAll()
         }
         onAboutToHide: {
             ActionProvider.hideRenamePopup()
@@ -102,6 +104,10 @@ Page {
             color: "#36393F"
             NChat {
                 anchors.fill: parent
+                chatModel: ClientStore.conversationModel
+                onMessageWritten: {
+                    ActionProvider.sendMessage(message)
+                }
             }
         }
         ScrollView {
@@ -249,10 +255,6 @@ Page {
                 delegate: ImageListItem {
                     objectName: "imageDelegate"
                     imagePath: model.fileURL
-                    onImagePathChanged: {
-                        imagePath = model.fileURL
-                    }
-
                     imageName: model.fileName
                     onClicked: {
                         gridFolders.deselectAll()

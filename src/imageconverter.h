@@ -10,7 +10,8 @@ class ImageConventer : public QObject {
 public:
     explicit ImageConventer(QObject *parent = nullptr);
     QFuture<QList<QImage>> scaleImages(QStringList paths, QSize size);
-    QFuture<QList<QJsonObject> > scaleAndConvertImages(QFileInfoList imagesInfoList, QSize size);
+    QFuture<QList<QJsonObject>> scaleAndConvertImages(QFileInfoList imagesInfoList, double scale);
+    QFuture<QList<QJsonObject>> convertImages(QFileInfoList imagesInfoList);
 signals:
 
 };

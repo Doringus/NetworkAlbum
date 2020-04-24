@@ -10,12 +10,13 @@ Popup {
 
     property alias errorString: errorLabel.text
     property alias link: linkField.text
+    property alias scaled: toggleButton.checked
 
     signal clicked()
 
     anchors.centerIn: parent
     width: 550
-    height: 400
+    height: 460
     modal: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     clip: true
@@ -29,6 +30,7 @@ Popup {
 
     onClosed: {
         link = ""
+        scaled = false
     }
 
     contentItem: Rectangle {
@@ -70,6 +72,20 @@ Popup {
                 font.pointSize: 10
                 color: "#F04747"
                 visible: text !== ""
+            }
+            RowLayout {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 40
+                Label {
+                    text: "Скачивать сжатые картинки"
+                    font.pointSize: 10
+                    color: "#87909C"
+                }
+                NToggleButton {
+                     id: toggleButton
+                     text: ""
+                }
             }
         }
         Rectangle {

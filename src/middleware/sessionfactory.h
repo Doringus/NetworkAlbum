@@ -15,6 +15,7 @@ public:
 private:
     Session processCreateSession(QList<QVariant> data);
     QString validateUrl(QUrl url);
+    QList<QUrl> m_SessionsUrlCache;
 signals:
 
 };

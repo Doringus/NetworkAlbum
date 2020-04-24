@@ -17,10 +17,14 @@ SOURCES += \
         src/action/actionprovider.cpp \
         src/albumslistmodel.cpp \
         src/base/dispatcher.cpp \
+        src/conversationmodel.cpp \
         src/core.cpp \
+        src/displayfilesystemmodel.cpp \
         src/imageconverter.cpp \
+        src/imagemover.cpp \
         src/main.cpp \
         src/middleware/clientnetworkaccessmiddleware.cpp \
+        src/middleware/linkmiddleware.cpp \
         src/middleware/networkaccessmiddleware.cpp \
         src/middleware/sessionfactory.cpp \
         src/network/albumclient.cpp \
@@ -30,9 +34,13 @@ SOURCES += \
         src/network/tcpconnection.cpp \
         src/network/worker.cpp \
         src/session.cpp \
+        src/store/albumsstore.cpp \
+        src/store/albumstore.cpp \
         src/store/clientstore.cpp \
+        src/store/conversationstore.cpp \
         src/store/linkstore.cpp \
-        src/store/mainstore.cpp
+        src/store/rootstore.cpp \
+        src/store/sessionsstore.cpp
 
 RESOURCES += qml.qrc
 
@@ -55,9 +63,13 @@ HEADERS += \
     src/base/dispatcher.h \
     src/base/middleware.h \
     src/base/store.h \
+    src/conversationmodel.h \
     src/core.h \
+    src/displayfilesystemmodel.h \
     src/imageconverter.h \
+    src/imagemover.h \
     src/middleware/clientnetworkaccessmiddleware.h \
+    src/middleware/linkmiddleware.h \
     src/middleware/networkaccessmiddleware.h \
     src/middleware/sessionfactory.h \
     src/network/albumclient.h \
@@ -68,6 +80,10 @@ HEADERS += \
     src/network/tcpconnection.h \
     src/network/worker.h \
     src/session.h \
+    src/store/albumsstore.h \
+    src/store/albumstore.h \
     src/store/clientstore.h \
+    src/store/conversationstore.h \
     src/store/linkstore.h \
-    src/store/mainstore.h
+    src/store/rootstore.h \
+    src/store/sessionsstore.h

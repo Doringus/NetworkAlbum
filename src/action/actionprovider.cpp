@@ -39,8 +39,9 @@ void ActionProvider::hideImagePopup() {
     Dispatcher::get().dispatch(new Action(ActionType::HIDE_IMAGE_POPUP));
 }
 
-void ActionProvider::connectToAlbum(QString link) {
-    Dispatcher::get().dispatch(new Action(ActionType::CONNECT_TO_ALBUM, link));
+void ActionProvider::connectToAlbum(QString link, bool scaledImages) {
+    QVariant data = QVariant::fromValue<QPair<QString, bool>>(QPair<QString, bool>(link, scaledImages));
+    Dispatcher::get().dispatch(new Action(ActionType::CONNECT_TO_ALBUM, data));
 }
 
 void ActionProvider::createFolder(QString folderName) {
@@ -101,4 +102,20 @@ void ActionProvider::hideRenamePopup() {
 
 void ActionProvider::deleteFiles() {
     Dispatcher::get().dispatch(new Action(ActionType::DELETE_FILES));
+}
+
+void ActionProvider::syncImages() {
+    Dispatcher::get().dispatch(new Action(ActionType::SYNC_IMAGES));
+}
+
+void ActionProvider::sendMessage(QString message) {
+    Dispatcher::get().dispatch(new Action(ActionType::BEGIN_SEND_MESSAGE, message));
+}
+
+void ActionProvider::showLinkPopup(int index) {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_LINK_POPUP, index));
+}
+
+void ActionProvider::hideLinkPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_LINK_POPUP));
 }

@@ -13,7 +13,7 @@ Item {
     signal backButtonClicked()
     signal moveButtonClicked()
     signal renameButtonClicked()
-    signal deleteButtonClicked()
+    signal sendImagesButtonClicked()
 
     Rectangle {
         id: componentTitle
@@ -91,14 +91,6 @@ Item {
                         renameButtonClicked()
                     }
                 }
-                NToolButton {
-                    icon: "\uf014"
-                    pointSize: 16
-                    toolTip: "Удалить"
-                    onClicked: {
-                        deleteButtonClicked()
-                    }
-                }
             }
         }
 
@@ -109,6 +101,14 @@ Item {
             anchors.bottom: parent.bottom
             anchors.rightMargin: 20
 
+            NToolButton {
+                icon: "\uf093"
+                pointSize: 16
+                toolTip: "Отправить изменения"
+                onClicked: {
+                    sendImagesButtonClicked()
+                }
+            }
             NToolButton {
                 icon: "\uf07c"
                 pointSize: 16

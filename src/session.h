@@ -2,29 +2,44 @@
 
 #include <QObject>
 #include <QUrl>
-#include <QMap>
+#include <QHash>
+
+#include "conversationmodel.h"
 
 class Session {
 public:
-    explicit Session(QUrl albumPath = QUrl(), bool hasCopy = false, double compress = 50.0f, QString link = QString());
+    explicit Session(QUrl albumPath = QUrl(), bool hasCopy = false, double compress = 50.0f);
+    ~Session();
+    Session(const Session& other);
+
+    void closeSession();
+
     QUrl getAlbumPath() const;
     bool hasCopy() const;
     double getCompression() const;
-    QString getLink() const;
+    QString getGlobalLink() const;
+    QString getLocalLink() const;
+    QString getSessionId() const;
+    ConversationModel* getConversation() const;
 
-    void setAlbumPath(QUrl url);
-    void setLink(QString link);
+    void setAlbumPath(const QUrl& url);
+    void setGlobalLink(const QString& link);
+    void setLocalLink(const QString& link);
+    void setConversation(ConversationModel *conversation);
+    void setSessionId(const QString& id);
+    void setIndex(int index);
 
     friend bool operator==(const Session& left, const Session& right) {
-        return left.getLink() == right.getLink() ||
-                left.getAlbumPath() == right.getAlbumPath();
+        return left.getAlbumPath() == right.getAlbumPath();
     }
+private:
+    void markImages();
 private:
     QUrl m_AlbumPath;
     bool m_HasCopy;
     double m_Compress;
-    QString m_Link;
-
+    QString m_GlobalLink, m_SessionId, m_LocalLink;
+    ConversationModel *m_Conversation;
 };
 
 Q_DECLARE_METATYPE(Session)

@@ -10,18 +10,14 @@
 
 #include "worker.h"
 #include "networkactiontypes.h"
+#include "albumclient.h"
 #include "../base/dispatcher.h"
 #include "../action/actiontypes.h"
 
-Server::Server(QObject *parent, AlbumLinkFactory *factory) : QTcpServer(parent) {
+Server::Server(QObject *parent) : QTcpServer(parent) {
     for(int i = 0; i < THREAD_COUNT; ++i) {
         QThread *thread = new QThread(this);
-        Worker *worker = new Worker(nullptr, factory, i);
-        worker->moveToThread(thread);
-        connect(worker, &Worker::clientConnected, this, &Server::onClientConnected, Qt::QueuedConnection);
-        connect(thread, &QThread::finished, worker, &QObject::deleteLater);
         m_Threads.append(thread);
-        m_Workers.append(worker);
         thread->start();
     }
 }
@@ -33,31 +29,73 @@ Server::~Server() {
     }
 }
 
-void Server::onClientConnected(QString link, int workerIndex) {
-    networkMessage_t message;
-    message.workerIndex = workerIndex;
-    message.clientLink = link;
-    Dispatcher::get().dispatch(new Action(ActionType::CLIENT_CONNECTED, QVariant::fromValue(message)));
+void Server::incomingConnection(qintptr descriptor) {
+    QThread *thread = m_Threads.at(m_QueueNumber % THREAD_COUNT);
+    AlbumClient *client = new AlbumClient(nullptr, descriptor);
+    connect(client, &AlbumClient::authorizationRequired, this, &Server::onAuthClient, Qt::QueuedConnection);
+    connect(client, &AlbumClient::imagesRequired, this, &Server::onClientNeedImages, Qt::QueuedConnection);
+    connect(client, &AlbumClient::syncImages, this, &Server::onSyncImages, Qt::QueuedConnection);
+    connect(client, &AlbumClient::disconnected, this, &Server::onClientDisconnected, Qt::QueuedConnection);
+    connect(client, &AlbumClient::conversationReceived, this, &Server::onClientChatMessage, Qt::QueuedConnection);
+    client->moveToThread(thread);
+    m_QueueNumber++;
 }
 
-void Server::sendImages(networkMessage_t message) {
+void Server::addSessionLink(const QString& link) {
+    m_Links.insert(link);
+}
+
+void Server::sendImages(const networkMessage_t& message) {
     qDebug() << "Sending images";
     QJsonObject messageObject;
     messageObject.insert("MessageType", static_cast<int>(NetworkActionTypes::ALBUM_IMAGES));
     QList<QJsonObject> images = message.data.value<QList<QJsonObject>>();
-    QJsonArray jsonImages;
-    foreach(QJsonObject imageJson, images) {
-        jsonImages << imageJson;
-    }
-    messageObject.insert("Images", jsonImages);
-    Worker *worker = m_Workers.at(message.workerIndex);
-    QMetaObject::invokeMethod(worker, "sendMessage", Qt::QueuedConnection,
-                              Q_ARG(QString, message.clientLink),
-                              Q_ARG(QString, QString(QJsonDocument(messageObject).toJson(QJsonDocument::Compact))));
+    QMetaObject::invokeMethod(m_Clients.value(message.clientLink), "sendImages", Qt::QueuedConnection,
+                              Q_ARG(QList<QJsonObject>, images));
 }
 
-void Server::incomingConnection(qintptr descriptor) {
-    Worker *worker = m_Workers.at(m_QueueNumber % THREAD_COUNT);
-    QMetaObject::invokeMethod(worker, "addClientConnection", Qt::QueuedConnection, Q_ARG(qintptr, descriptor));
-    m_QueueNumber++;
+void Server::sendMessage(const networkMessage_t &message) {
+    qDebug() << "Sending message" << message.clientLink << message.data;
+    QMetaObject::invokeMethod(m_Clients.value(message.clientLink), "sendConversation", Qt::QueuedConnection,
+                              Q_ARG(QString, message.data.toString()));
 }
+
+void Server::onClientNeedImages(const QString& link, bool scaled) {
+    networkMessage_t message;
+    message.clientLink = link;
+    message.data = scaled;
+    Dispatcher::get().dispatch(new Action(ActionType::CLIENT_CONNECTED, QVariant::fromValue(message)));
+}
+
+void Server::onAuthClient(const QString& link, AlbumClient *client) {
+    qDebug() << "Auth client" << link << thread();
+    if(m_Links.contains(link)) {
+        m_Links.remove(link);
+        QMetaObject::invokeMethod(client, "setAuth", Qt::QueuedConnection, Q_ARG(bool, true));
+        m_Clients.insert(link, client);
+    } else {
+        QMetaObject::invokeMethod(client, "setAuth", Qt::QueuedConnection, Q_ARG(bool, false));
+    }
+}
+
+void Server::onClientChatMessage(const QString& link, const QString& message) {
+    networkMessage_t networkMessage;
+    networkMessage.clientLink = link;
+    networkMessage.data = message;
+    Dispatcher::get().dispatch(new Action(ActionType::RECEIVE_MESSAGE, QVariant::fromValue(networkMessage)));
+}
+
+void Server::onSyncImages(const QString& link, const QVariant& data) {
+    networkMessage_t message;
+    message.clientLink = link;
+    message.data = data;
+    Dispatcher::get().dispatch(new Action(ActionType::RECEIVE_SYNC_DATA, QVariant::fromValue(message)));
+}
+
+void Server::onClientDisconnected(const QString& link) {
+    m_Links.insert(link);
+    m_Clients.remove(link);
+}
+
+
+

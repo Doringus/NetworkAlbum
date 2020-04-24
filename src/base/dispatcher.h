@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QQueue>
 #include <QSharedPointer>
+#include <QHash>
 
 #include "action.h"
 
@@ -21,8 +22,10 @@ public:
         return instance;
     }
 
-    void addStore(QSharedPointer<Store> store);
-    void addMiddleware(QSharedPointer<Middleware> middleware);
+    int addStore(const QString& storeName, const QSharedPointer<Store>& store);
+    int addMiddleware(const QString& middlewareName, const QSharedPointer<Middleware>& middleware);
+    void removeMiddleware(const QString& middlewareName);
+    void removeStore(const QString& storeName);
 
     template<class... Args>
     void dispatch(Args&&... args) {
@@ -39,7 +42,7 @@ private:
     void handleAction();
 private:
     QQueue<QSharedPointer<Action>> m_Actions;
-    QVector<QSharedPointer<Store>> m_Stores;
-    QVector<QSharedPointer<Middleware>> m_Middlewares;
+    QHash<QString, QSharedPointer<Middleware>> m_Middlewares;
+    QHash<QString, QSharedPointer<Store>> m_Stores;
 };
 

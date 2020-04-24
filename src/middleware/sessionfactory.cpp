@@ -29,14 +29,17 @@ QSharedPointer<Action> SessionFactory::process(const QSharedPointer<Action>& act
 }
 
 Session SessionFactory::processCreateSession(QList<QVariant> data) {
-    Session session(data.at(0).toUrl(), data.at(1).toBool(), data.at(2).toDouble(), "");
+    Session session(data.at(0).toUrl(), data.at(1).toBool(), data.at(2).toDouble());
     return session;
 }
 
 QString SessionFactory::validateUrl(QUrl url) {
     if(url.isEmpty()) {
         return "Не указана папка альбома!";
+    } else if(m_SessionsUrlCache.contains(url)) {
+        return "Папка уже используется!";
     } else {
+        m_SessionsUrlCache.append(url);
         return QString();
     }
 }

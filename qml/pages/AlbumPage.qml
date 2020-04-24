@@ -9,9 +9,9 @@ import NetworkAlbum 1.0
 
 Page {
     header: NToolBar {
-        pageTitle: MainStore.albumPageTitle
+        pageTitle: AlbumStore.albumPageTitle
         onBackButtonClicked: {
-            if(MainStore.albumUrl.toString().toLowerCase() === folderModel.folder.toString().toLowerCase()) {
+            if(AlbumStore.albumUrl.toString().toLowerCase() === folderModel.folder.toString().toLowerCase()) {
                 parent.StackView.view.pop()
             } else {
                 ActionProvider.openFolder(folderModel.parentFolder)
@@ -29,12 +29,12 @@ Page {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         contentItem: Image {
             anchors.fill: parent
-            source: MainStore.imageUrl
+            source: AlbumStore.imageUrl
             sourceSize.width: width
             sourceSize.height: height
             asynchronous: true
         }
-        visible: MainStore.showImagePopup
+        visible: AlbumStore.showImagePopup
         onAboutToHide: ActionProvider.hideImagePopup()
     }
 
@@ -60,6 +60,10 @@ Page {
             color: "#36393F"
             NChat {
                 anchors.fill: parent
+                chatModel: AlbumStore.conversationModel
+                onMessageWritten: {
+                    ActionProvider.sendMessage(message)
+                }
             }
         }
         ScrollView {
@@ -111,22 +115,11 @@ Page {
                     id: folderModel
                     showDirs: true
                     showFiles: false
-                    folder: MainStore.currentFolderUrl
-                    rootFolder: MainStore.albumUrl                    
+                    folder: AlbumStore.currentFolderUrl
+                    rootFolder: AlbumStore.albumUrl
                 }
                 cellHeight: 60
                 cellWidth: 220
-                header: Rectangle {
-                    width: 200
-                    height: 80
-                    color: "transparent"
-                    FolderListItem {
-                        anchors.verticalCenter: parent.verticalCenter
-                        folderName: "Создать"
-                        folderIcon: "\uf067"
-                    }
-                }
-
                 delegate: FolderListItem {
                     folderName: model.fileBaseName
                     onClicked: {
@@ -160,8 +153,8 @@ Page {
                 cacheBuffer: 0
                 model: FolderListModel {
                     showDirs: false
-                    folder: MainStore.currentFolderUrl
-                    rootFolder: MainStore.albumUrl
+                    folder: AlbumStore.currentFolderUrl
+                    rootFolder: AlbumStore.albumUrl
                 }
                 cellHeight: 220
                 cellWidth: 220

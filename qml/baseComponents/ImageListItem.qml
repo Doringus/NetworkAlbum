@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.12
 
 Item {
     id: root
-   // property url imagePath: "pics/logo.png"
     property alias imagePath: image.source
     property string imageName: "IMAGENAME"
     property bool selected: false
@@ -42,11 +41,6 @@ Item {
         color: "transparent"
         border.color: "#202225"
         radius: 8
-        Drag.active: area.drag.active && selected
-        Drag.hotSpot.x: 0
-        Drag.hotSpot.y: 0
-        Drag.mimeData: { "text/plain": "test"/*item.display */}
-        Drag.dragType: Drag.Automatic
     }
 
     Rectangle {
@@ -79,16 +73,9 @@ Item {
             anchors.fill: parent
             sourceSize.width: width
             sourceSize.height: height
-            cache: true
+            cache: false
             asynchronous: true
         }
-    }
-
-    Rectangle{
-        id: test
-        width: 50
-        height: 50
-       // visible: false
     }
 
     MouseArea {

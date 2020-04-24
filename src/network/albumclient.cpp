@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 #include "networkactiontypes.h"
 
@@ -19,7 +20,7 @@ AlbumClient::AlbumClient(QObject *parent, quintptr descriptor) : QObject(parent)
     m_IncomingMessage.setVersion(QDataStream::Qt_5_13);
 }
 
-void AlbumClient::sendMessage(QString message) {
+void AlbumClient::sendMessage(const QString& message) {
     qDebug() << this << "Sending message";
     QByteArray buf;
     QDataStream out(&buf, QIODevice::WriteOnly);
@@ -27,6 +28,41 @@ void AlbumClient::sendMessage(QString message) {
     out << message;
     m_Socket->write(buf);
     m_Socket->flush();
+}
+
+QJsonObject AlbumClient::createMessage(int type, const QJsonValue &value) {
+    QJsonObject object;
+    object.insert("MessageType", type);
+    object.insert("MessageValue", value);
+    return object;
+}
+
+bool AlbumClient::scaled() {
+    return m_Scaled;
+}
+
+void AlbumClient::setAuth(bool auth) {
+    sendMessage(QJsonDocument(createMessage(static_cast<int>(NetworkActionTypes::AUTHORIZATION), auth))
+                                            .toJson(QJsonDocument::Compact));
+    if(!auth) {
+        disconnectClient();
+    } else {
+        m_HasAuth = auth;
+    }
+}
+
+void AlbumClient::sendImages(const QList<QJsonObject>& images) {
+    QJsonArray jsonImages;
+    foreach(QJsonObject imageJson, images) {
+        jsonImages << imageJson;
+    }
+    sendMessage(QJsonDocument(createMessage(static_cast<int>(NetworkActionTypes::ALBUM_IMAGES), jsonImages))
+                .toJson(QJsonDocument::Compact));
+}
+
+void AlbumClient::sendConversation(const QString &message) {
+    sendMessage(QJsonDocument(createMessage(static_cast<int>(NetworkActionTypes::CONVERSATION), message))
+                .toJson(QJsonDocument::Compact));
 }
 
 void AlbumClient::onReadyRead() {
@@ -45,18 +81,22 @@ void AlbumClient::onReadyRead() {
 }
 
 void AlbumClient::onConnected() {
+
 }
 
 void AlbumClient::onDisconnected() {
-
+    disconnectClient();
 }
 
 void AlbumClient::disconnectClient() {
-
+    if(m_HasAuth) {
+        emit disconnected(m_Link);
+    }
+    deleteLater();
 }
 
-void AlbumClient::handleMessage(QString message) {
-    qDebug() << this << "Recieved message";
+void AlbumClient::handleMessage(const QString& message) {
+    qDebug() << this << "Received message";
     QJsonDocument messageDocument = QJsonDocument::fromJson(message.toUtf8());
     if(messageDocument.isNull()) {
         disconnectClient();
@@ -64,11 +104,25 @@ void AlbumClient::handleMessage(QString message) {
     QJsonObject messageObject = messageDocument.object();
     int type = messageObject.value("MessageType").toInt();
     if(m_HasAuth) {
-        emit messageRecieved(type, messageObject.value("MessageValue").toVariant());
+        switch (static_cast<NetworkActionTypes>(type)) {
+            case NetworkActionTypes::SYNC: {
+                emit syncImages(m_Link, messageObject.value("MessageValue").toVariant());
+                break;
+            }
+            case NetworkActionTypes::ALBUM_IMAGES: {
+                emit imagesRequired(m_Link, messageObject.value("MessageValue").toBool());
+                break;
+            }
+            case NetworkActionTypes::CONVERSATION: {
+                emit conversationReceived(m_Link, messageObject.value("MessageValue").toString());
+                break;
+            }
+        }
     } else {
         if(static_cast<NetworkActionTypes>(type) != NetworkActionTypes::AUTHORIZATION) {
             disconnectClient();
         }
-        emit authorizationRequired(messageObject.value("MessageValue").toString());
+        m_Link = messageObject.value("MessageValue").toString();
+        emit authorizationRequired(m_Link, this);
     }
 }

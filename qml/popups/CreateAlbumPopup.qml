@@ -48,7 +48,6 @@ Popup {
         hasReserveFolder = false
         pathToAlbumText = ""
         albumUrl = ""
-        stack.pop()
     }
 
     Item {
@@ -193,8 +192,8 @@ Popup {
                anchors.right: parent.right
                width: 120
                height: 40
-               text: "Далее"
-               onClicked: stack.push(albumCode)
+               text: "Создать"
+               onClicked: popup.created()
            }
        }
    }

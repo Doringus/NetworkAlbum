@@ -9,7 +9,7 @@ Item {
     property string albumName: "Новый альбом"
 
     signal clicked()
-    signal opened()
+    signal showLink()
 
     width: 330
     height: 210
@@ -100,8 +100,8 @@ Item {
                 width: 210
                 topPadding: 10
 
-                Action { text: qsTr("Открыть"); icon.name: "\uf07c"; onTriggered: root.opened()}
-                Action { text: qsTr("Копировать ссылку"); icon.name: "\uf064"; }
+                Action { text: qsTr("Открыть"); icon.name: "\uf07c"; onTriggered: root.clicked()}
+                Action { text: qsTr("Копировать ссылку"); icon.name: "\uf064"; onTriggered:  root.showLink()}
                 Action { text: qsTr("Закрыть альбом"); icon.name: "\uf00d";}
 
                 delegate: NMenuItem{}

@@ -10,14 +10,7 @@
 #include "../session.h"
 
 NetworkAccessMiddleware::NetworkAccessMiddleware(QObject *parent) : QObject(parent) {
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished, [=](QNetworkReply *reply) {
-        QByteArray data=reply->readAll();
-        qInfo() << this << "Public IP = " << QString::fromUtf8(data);
-        m_AlbumLinkFactory = new AlbumLinkFactory(this, QString::fromUtf8(data));
-        m_Server = new Server(this, m_AlbumLinkFactory);
-    });
-    manager->get(QNetworkRequest(QUrl("https://api.ipify.org")));
+    m_Server = new Server(this);
 }
 
 QSharedPointer<Action> NetworkAccessMiddleware::process(const QSharedPointer<Action> &action) {
@@ -29,12 +22,12 @@ QSharedPointer<Action> NetworkAccessMiddleware::process(const QSharedPointer<Act
             break;
         }
         case ActionType::SEND_MESSAGE: {
+            m_Server->sendMessage(action->getData<networkMessage_t>());
             break;
         }
-        case ActionType::CREATE_SESSION: {
-            Session session = action->getData<Session>();
-            session.setLink(m_AlbumLinkFactory->getLink());
-            action->setData(QVariant::fromValue(session));
+        case ActionType::REGISTER_LINK: {
+            m_Server->addSessionLink(action->getData<QString>());
+            qDebug() << this << "Link registered" << action->getData<QString>();
             break;
         }
         case ActionType::START_SERVER: {

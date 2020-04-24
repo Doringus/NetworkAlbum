@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 import "../baseComponents"
+import "../popups"
 import NetworkAlbum 1.0
 Page {
     header: NMainToolBar{}
@@ -12,6 +13,14 @@ Page {
     Item {
         id: root
         anchors.fill: parent
+        LinkPopup {
+            id: linkPoup
+            visible: AlbumsStore.showLinkPopup
+            onAboutToHide: ActionProvider.hideLinkPopup()
+            globalLink: AlbumsStore.albumGlobalLink
+            localLink: AlbumsStore.albumLocalLink
+        }
+
         Popup {
             id: codePopup
             width: 440
@@ -91,13 +100,12 @@ Page {
             delegate: AlbumListItem {
                 albumName: model.albumName
                 imagePath: model.titleImage
-                onOpened: {
-                    ActionProvider.openAlbum(index)
-                    openAlbum()
-                }
                 onClicked: {
                     ActionProvider.openAlbum(index)
                     openAlbum()
+                }
+                onShowLink: {
+                    ActionProvider.showLinkPopup(index)
                 }
             }
         }

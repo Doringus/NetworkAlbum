@@ -23,7 +23,7 @@ public:
     Q_INVOKABLE void hideOpenPopup();
     Q_INVOKABLE void openImagePopup(QUrl imageUrl);
     Q_INVOKABLE void hideImagePopup();
-    Q_INVOKABLE void connectToAlbum(QString link);
+    Q_INVOKABLE void connectToAlbum(QString link, bool scaledImages);
     Q_INVOKABLE void createFolder(QString folderName);
     Q_INVOKABLE void showCreateFolderPopup();
     Q_INVOKABLE void hideCreateFolderPopup();
@@ -39,6 +39,10 @@ public:
     Q_INVOKABLE void showRenamePopup();
     Q_INVOKABLE void hideRenamePopup();
     Q_INVOKABLE void deleteFiles();
+    Q_INVOKABLE void syncImages();
+    Q_INVOKABLE void sendMessage(QString message);
+    Q_INVOKABLE void showLinkPopup(int index);
+    Q_INVOKABLE void hideLinkPopup();
 private:
     ActionProvider() = default;
     ~ActionProvider() = default;

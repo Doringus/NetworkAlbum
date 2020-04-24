@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QPair>
+#include <QUrl>
 
 class AlbumsListModel : public QAbstractListModel {
     Q_OBJECT

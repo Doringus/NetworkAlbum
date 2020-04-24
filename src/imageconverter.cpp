@@ -21,12 +21,12 @@ QFuture<QList<QImage>> ImageConventer::scaleImages(QStringList paths, QSize size
     return QtConcurrent::run(readAndScale, paths, size);
 }
 
-QFuture<QList<QJsonObject>> ImageConventer::scaleAndConvertImages(QFileInfoList imagesInfoList, QSize size) {
-    auto readAndConvert = [](QFileInfoList images, QSize size) {
+QFuture<QList<QJsonObject>> ImageConventer::scaleAndConvertImages(QFileInfoList imagesInfoList, double scale) {
+    auto readAndConvert = [](QFileInfoList images, double scale) {
         QList<QJsonObject> result;
         foreach(QFileInfo imageInfo, images) {
             QImage image(imageInfo.absoluteFilePath());
-            image = image.scaled(size);
+            image = image.scaled(image.size() * scale / 100.0f);
             QBuffer buff;
             buff.open(QIODevice::WriteOnly);
             image.save(&buff, "JPG");
@@ -40,5 +40,26 @@ QFuture<QList<QJsonObject>> ImageConventer::scaleAndConvertImages(QFileInfoList 
         }
         return result;
     };
-    return QtConcurrent::run(readAndConvert, imagesInfoList, size);
+    return QtConcurrent::run(readAndConvert, imagesInfoList, scale);
+}
+
+QFuture<QList<QJsonObject>> ImageConventer::convertImages(QFileInfoList imagesInfoList) {
+    auto readAndConvert = [](QFileInfoList images) {
+        QList<QJsonObject> result;
+        foreach(QFileInfo imageInfo, images) {
+            QImage image(imageInfo.absoluteFilePath());
+            QBuffer buff;
+            buff.open(QIODevice::WriteOnly);
+            image.save(&buff, "JPG");
+            QByteArray t = buff.data();
+            auto encoded = buff.data().toBase64();
+            QJsonObject imageObject;
+            imageObject.insert("Name", imageInfo.baseName());
+            imageObject.insert("OriginPath", imageInfo.fileName());
+            imageObject.insert("Data", QLatin1String(encoded));
+            result.append(imageObject);
+        }
+        return result;
+    };
+    return QtConcurrent::run(readAndConvert, imagesInfoList);
 }
