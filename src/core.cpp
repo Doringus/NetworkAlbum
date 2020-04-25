@@ -67,35 +67,33 @@ Core::Core(QObject *parent) : QObject(parent) {
         Q_UNUSED(jsEngine)
     });
 
-    Dispatcher::get().addStore("ClientStore", QSharedPointer<ClientStore>(&ClientStore::get(), [](ClientStore*){}));
-    Dispatcher::get().addStore("RootStore", QSharedPointer<RootStore>(&RootStore::get(), [](RootStore*){}));
-    Dispatcher::get().addStore("SessionsStore", QSharedPointer<SessionsStore>(&SessionsStore::get(), [](SessionsStore*){}));
-    Dispatcher::get().addStore("AlbumsStore", QSharedPointer<AlbumsStore>(&AlbumsStore::get(), [](AlbumsStore*){}));
-    Dispatcher::get().addStore("AlbumStore", QSharedPointer<AlbumStore>(&AlbumStore::get(), [](AlbumStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<RootStore>(&RootStore::get(), [](RootStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<SessionsStore>(&SessionsStore::get(), [](SessionsStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<AlbumsStore>(&AlbumsStore::get(), [](AlbumsStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<AlbumStore>(&AlbumStore::get(), [](AlbumStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<ClientStore>(&ClientStore::get(), [](ClientStore*){}));
     /// \warning Dont change the middlewares registration order
-    Dispatcher::get().addMiddleware("SessionFactory", QSharedPointer<SessionFactory>(m_SessionFactory, [](SessionFactory*){}));
-    Dispatcher::get().addMiddleware("LinkMiddleware", QSharedPointer<LinkMiddleware>(m_LinkMiddleware, [](LinkMiddleware*){}));
-    Dispatcher::get().addMiddleware("ServerNetworkMiddleware",
-                            QSharedPointer<NetworkAccessMiddleware>(m_NetworkAccessMiddleware, [](NetworkAccessMiddleware*){}));
-    Dispatcher::get().addMiddleware("ClientNetworkMiddleware",
-                            QSharedPointer<ClientNetworkAccessMiddleware>(m_ClientNetworkMiddleware, [](ClientNetworkAccessMiddleware*){}));
+    Dispatcher::get().addMiddleware(QSharedPointer<SessionFactory>(m_SessionFactory, [](SessionFactory*){}));
+    Dispatcher::get().addMiddleware(QSharedPointer<LinkMiddleware>(m_LinkMiddleware, [](LinkMiddleware*){}));
+    Dispatcher::get().addMiddleware(QSharedPointer<NetworkAccessMiddleware>(m_NetworkAccessMiddleware, [](NetworkAccessMiddleware*){}));
+    Dispatcher::get().addMiddleware(QSharedPointer<ClientNetworkAccessMiddleware>(m_ClientNetworkMiddleware, [](ClientNetworkAccessMiddleware*){}));
 
     connect(&RootStore::get(), &RootStore::sessionCreated, this, &Core::onSessionCreated);
     connect(&ClientStore::get(), &ClientStore::connectedToAlbum, this, &Core::onConnectedToAlbum);
 }
 
 void Core::onSessionCreated() {
-    Dispatcher::get().removeStore("ClientStore");
-    Dispatcher::get().removeMiddleware("ClientNetworkMiddleware");
+    Dispatcher::get().removeStore(QSharedPointer<Store>(&ClientStore::get(), [](ClientStore*){}));
+    Dispatcher::get().removeMiddleware(QSharedPointer<Middleware>(m_ClientNetworkMiddleware, [](ClientNetworkAccessMiddleware*){}));
     disconnect(&RootStore::get(), &RootStore::sessionCreated, this, &Core::onSessionCreated);
 }
 
 void Core::onConnectedToAlbum() {
-    Dispatcher::get().removeStore("AlbumStore");
-    Dispatcher::get().removeStore("AlbumsStore");
-    Dispatcher::get().removeStore("SessionsStore");
-    Dispatcher::get().removeMiddleware("ServerNetworkMiddleware");
-    Dispatcher::get().removeMiddleware("LinkMiddleware");
-    Dispatcher::get().removeMiddleware("SessionFactory");
+    Dispatcher::get().removeStore(QSharedPointer<Store>(&AlbumStore::get(), [](AlbumStore*){}));
+    Dispatcher::get().removeStore(QSharedPointer<Store>(&AlbumsStore::get(), [](AlbumsStore*){}));
+    Dispatcher::get().removeStore(QSharedPointer<Store>(&SessionsStore::get(), [](SessionsStore*){}));
+    Dispatcher::get().removeMiddleware(QSharedPointer<Middleware>(m_NetworkAccessMiddleware, [](NetworkAccessMiddleware*){}));
+    Dispatcher::get().removeMiddleware(QSharedPointer<Middleware>(m_LinkMiddleware, [](LinkMiddleware*){}));
+    Dispatcher::get().removeMiddleware(QSharedPointer<Middleware>(m_SessionFactory, [](SessionFactory*){}));
     disconnect(&ClientStore::get(), &ClientStore::connectedToAlbum, this, &Core::onConnectedToAlbum);
 }

@@ -55,8 +55,22 @@ const Session &SessionsStore::getSession(int index) {
     return m_Sessions.at(index);
 }
 
+int SessionsStore::getCurrentIndex() {
+    return m_CurrentAlbumIndex;
+}
+
+int SessionsStore::getSessionIndex(const QString &link) {
+    auto it = std::find_if(m_Sessions.begin(), m_Sessions.end(), [=](Session session){
+        return session.getSessionId() == link;
+    });
+    if(it == m_Sessions.end()) {
+        return -1;
+    } else {
+        return it - m_Sessions.begin();
+    }
+}
+
 void SessionsStore::processCreateSession(const Session& session) {
-    qDebug() << "Sessions store" << session.getConversation();
     if(m_Sessions.contains(session)) {
         return;
     }
@@ -70,7 +84,6 @@ void SessionsStore::processSendImages(networkMessage_t&& message) {
         return session.getSessionId() == message.clientLink;
     });
     if(it != m_Sessions.end()) {
-        qDebug() << "Session found";
         qDebug() << it->getAlbumPath().path();
         QDir albumDir(it->getAlbumPath().toLocalFile());
         QFileInfoList paths = albumDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
@@ -122,4 +135,40 @@ void SessionsStore::processReceiveMessage(const networkMessage_t &&message) {
     if(it != m_Sessions.end()){
         it->getConversation()->add(message.data.toString(), false);
     }
+}
+
+bool SessionsStore::copyFolder(const QString& from, const QString& to) {
+    bool success = false;
+    QDir sourceDir(from);
+    if(!sourceDir.exists()) {
+        return false;
+    }
+    QDir destDir(to);
+    if(destDir.exists()) {
+        destDir.removeRecursively();
+    }
+    destDir.mkdir(to);
+    QStringList files = sourceDir.entryList(QDir::Files);
+    for(int i = 0; i< files.count(); i++) {
+        QString srcName = from + QDir::separator() + files[i];
+        QString destName = to + QDir::separator() + files[i];
+        success = QFile::copy(srcName, destName);
+        if(!success) {
+            return false;
+        }
+
+    }
+    files.clear();
+    files = sourceDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    for(int i = 0; i< files.count(); i++)
+    {
+        QString srcName = from + QDir::separator() + files[i];
+        QString destName = to + QDir::separator() + files[i];
+        success = copyFolder(srcName, destName);
+        if(!success) {
+            return false;
+        }
+
+    }
+    return true;
 }

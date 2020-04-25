@@ -32,5 +32,6 @@
         <file>qml/baseComponents/NFolderItem.qml</file>
         <file>qml/popups/RenamePopup.qml</file>
         <file>qml/popups/LinkPopup.qml</file>
+        <file>qml/popups/ServerSettingsPopup.qml</file>
     </qresource>
 </RCC>

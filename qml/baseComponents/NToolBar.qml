@@ -7,7 +7,14 @@ Item {
     height: 50
 
     property alias pageTitle: pageTitleLabel.text
+    property alias showChat: showChatIndicator.isActivated
+
     signal backButtonClicked()
+    signal openSettings()
+    signal shareAlbum()
+    signal openInExplorer()
+    signal openChat()
+    signal hideChat()
 
     Rectangle {
         id: componentTitle
@@ -52,16 +59,39 @@ Item {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.rightMargin: 20
+            NToolButton {
+                Layout.alignment: Qt.AlignLeft
+                icon: "\uf07c"
+                pointSize: 16
+                toolTip: "Открыть в проводнике"
+                onClicked: openInExplorer()
+            }
+            NToolButton {
+                Layout.alignment: Qt.AlignLeft
+                icon: "\uf1e0"
+                pointSize: 16
+                toolTip: "Поделиться"
+                onClicked: shareAlbum()
+            }
+            ToolSeparator { }
             NToolButtonIndicator {
+                id: showChatIndicator
                 icon: "\uf0db"
                 pointSize: 16
                 toolTip: "Боковой чат"
+                onActivated: {
+                    openChat()
+                }
+                onDeactivated: {
+                    hideChat()
+                }
             }
             ToolSeparator { }
             NToolButton {
                 icon: "\uf013"
                 pointSize: 16
                 toolTip: "Настройки"
+                onClicked: openSettings()
             }
             NToolButton {
                 icon: "\uf128"

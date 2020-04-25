@@ -6,7 +6,9 @@ import "../baseComponents"
 import "../popups"
 import NetworkAlbum 1.0
 Page {
-    header: NMainToolBar{}
+    header: NMainToolBar{
+        onOpenSettings: ActionProvider.showSettingsPopup()
+    }
     property var albumsModel
     signal openAlbum()
 
@@ -19,6 +21,15 @@ Page {
             onAboutToHide: ActionProvider.hideLinkPopup()
             globalLink: AlbumsStore.albumGlobalLink
             localLink: AlbumsStore.albumLocalLink
+        }
+
+        ServerSettingsPopup {
+            id: settingPopup
+            showAlbumSettings: AlbumsStore.showAlbumSettings
+            albumReserveFolder: AlbumStore.albumReserveFolder
+            anchors.centerIn: parent
+            visible: AlbumsStore.showSettingsPopup
+            onAboutToHide: ActionProvider.hideSettingsPopup()
         }
 
         Popup {
@@ -100,12 +111,16 @@ Page {
             delegate: AlbumListItem {
                 albumName: model.albumName
                 imagePath: model.titleImage
+                notifications: model.notifications
                 onClicked: {
                     ActionProvider.openAlbum(index)
                     openAlbum()
                 }
                 onShowLink: {
                     ActionProvider.showLinkPopup(index)
+                }
+                onShowReserve: {
+                    ActionProvider.openReserveAlbum(index)
                 }
             }
         }

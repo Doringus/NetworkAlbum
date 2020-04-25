@@ -16,6 +16,8 @@ public:
     Q_PROPERTY(bool showImagePopup READ getShowImagePopup NOTIFY showImagePopupChanged)
     Q_PROPERTY(QUrl imageUrl READ getImageUrl NOTIFY imageUrlChanged)
     Q_PROPERTY(QAbstractListModel* conversationModel READ getConversationModel NOTIFY conversationModelChanged)
+    Q_PROPERTY(QString albumReserveFolder READ albumReserveFolder NOTIFY albumReserveFolderChanged)
+    Q_PROPERTY(bool showChat READ getShowChat NOTIFY showChatChanged)
 public:
     AlbumStore(const AlbumStore&) = delete;
     AlbumStore& operator=(const AlbumStore&) = delete;
@@ -32,6 +34,8 @@ public:
     QString getAlbumPageTitle();
     bool getShowImagePopup();
     QAbstractListModel* getConversationModel();
+    QString albumReserveFolder();
+    bool getShowChat();
 signals:
     void albumUrlChanged();
     void currentFolderUrlChanged();
@@ -39,17 +43,23 @@ signals:
     void showImagePopupChanged();
     void imageUrlChanged();
     void conversationModelChanged();
+    void albumReserveFolderChanged();
+    void showChatChanged();
 private:
     AlbumStore() = default;
     void processOpenAlbum();
     void processOpenFolder(const QUrl& folder);
     void processOpenImagePopup(const QUrl& imageUrl);
+    void processOpenReserveAlbum();
+    void processOpenInExplorer();
 
     void setImagePopupVisibility(bool visible);
+    void setChatVisibility(bool visible);
 private:
     QUrl m_CurrentAlbumUrl, m_CurrentFolderUrl, m_ImageUrl;
     QString m_AlbumPageTitle;
     ConversationModel *m_Conversation;
-    bool m_ShowImagePopup;
+    QString m_AlbumReserveFolder;
+    bool m_ShowImagePopup, m_ShowChat = true;
 };
 

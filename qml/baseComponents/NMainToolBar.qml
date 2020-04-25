@@ -5,6 +5,9 @@ import QtQuick.Layouts 1.12
 Item {
     width: 600
     height: 50
+
+    signal openSettings()
+
     Rectangle {
         id: componentTitle
         anchors.left: parent.left
@@ -42,6 +45,7 @@ Item {
                 icon: "\uf013"
                 pointSize: 16
                 toolTip: "Настройки"
+                onClicked: openSettings()
             }
             NToolButton {
                 icon: "\uf128"

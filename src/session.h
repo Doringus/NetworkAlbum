@@ -15,11 +15,13 @@ public:
     void closeSession();
 
     QUrl getAlbumPath() const;
+    QUrl getAlbumReservePath() const;
     bool hasCopy() const;
     double getCompression() const;
     QString getGlobalLink() const;
     QString getLocalLink() const;
     QString getSessionId() const;
+    QString getReserveFolder() const;
     ConversationModel* getConversation() const;
 
     void setAlbumPath(const QUrl& url);
@@ -35,10 +37,11 @@ public:
 private:
     void markImages();
 private:
-    QUrl m_AlbumPath;
+    QUrl m_AlbumPath, m_AlbumReserveFolder;
     bool m_HasCopy;
     double m_Compress;
     QString m_GlobalLink, m_SessionId, m_LocalLink;
+    QString m_ReserveFolder;
     ConversationModel *m_Conversation;
 };
 

@@ -24,6 +24,37 @@ void AlbumsStore::process(const QSharedPointer<Action> &action) {
             setShowLinkPopupVisibility(false);
             break;
         }
+        case ActionType::RECEIVE_MESSAGE: {
+            processReceiveMessage(action->getData<networkMessage_t>().clientLink);
+            break;
+        }
+        case ActionType::OPEN_ALBUM: {
+            m_CurrentAlbumIndex = action->getData<int>();
+            m_Albums.clearNotifications(m_CurrentAlbumIndex);
+            break;
+        }
+        case ActionType::OPEN_RESERVE_ALBUM: {
+            m_CurrentAlbumIndex = action->getData<int>();
+            m_Albums.clearNotifications(m_CurrentAlbumIndex);
+            break;
+        }
+        case ActionType::RETURN_TO_ALBUMS_PAGE: {
+            m_CurrentAlbumIndex = -1;
+            break;
+        }
+        case ActionType::SHOW_SETTINGS_POPUP: {
+            setSettingPopupVisibility(true);
+            if(m_CurrentAlbumIndex == -1) {
+                setShowAlbumSettings(false);
+            } else {
+                setShowAlbumSettings(true);
+            }
+            break;
+        }
+        case ActionType::HIDE_SETTINGS_POPUP: {
+            setSettingPopupVisibility(false);
+            break;
+        }
     }
 }
 
@@ -41,6 +72,14 @@ QString AlbumsStore::getAlbumLocalLink() {
 
 QAbstractListModel* AlbumsStore::getAlbumsModel() {
     return &m_Albums;
+}
+
+bool AlbumsStore::getShowSettingsPopup() {
+    return m_ShowSettingsPopup;
+}
+
+bool AlbumsStore::getShowAlbumSettings() {
+    return m_ShowAlbumSettings;
 }
 
 void AlbumsStore::processAddAlbum(const Session& session) {
@@ -68,4 +107,21 @@ void AlbumsStore::processShowAlbumLinks(int index) {
     }
     emit albumGlobalLinkChanged();
     emit albumLocalLinkChanged();
+}
+
+void AlbumsStore::processReceiveMessage(const QString& link) {
+    int sessionIndex = SessionsStore::get().getSessionIndex(link);
+    if(m_CurrentAlbumIndex != sessionIndex && sessionIndex != -1) {
+        m_Albums.addNotification(sessionIndex);
+    }
+}
+
+void AlbumsStore::setSettingPopupVisibility(bool visible) {
+    m_ShowSettingsPopup = visible;
+    emit showSettingsPopupChanged();
+}
+
+void AlbumsStore::setShowAlbumSettings(bool visible) {
+    m_ShowAlbumSettings = visible;
+    emit showAlbumSettingsChanged();
 }

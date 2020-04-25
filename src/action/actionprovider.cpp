@@ -11,6 +11,18 @@ void ActionProvider::openAlbum(int index) {
     Dispatcher::get().dispatch(new Action(ActionType::OPEN_ALBUM, index));
 }
 
+void ActionProvider::openReserveAlbum(int index) {
+    Dispatcher::get().dispatch(new Action(ActionType::OPEN_RESERVE_ALBUM, index));
+}
+
+void ActionProvider::openInExplorer() {
+    Dispatcher::get().dispatch(new Action(ActionType::OPEN_IN_EXPLORER));
+}
+
+void ActionProvider::returnToAlbumsPage() {
+    Dispatcher::get().dispatch(new Action(ActionType::RETURN_TO_ALBUMS_PAGE));
+}
+
 void ActionProvider::openFolder(QUrl folderUrl) {
     Dispatcher::get().dispatch(new Action(ActionType::OPEN_FOLDER, folderUrl));
 }
@@ -118,4 +130,20 @@ void ActionProvider::showLinkPopup(int index) {
 
 void ActionProvider::hideLinkPopup() {
     Dispatcher::get().dispatch(new Action(ActionType::HIDE_LINK_POPUP));
+}
+
+void ActionProvider::showSettingsPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_SETTINGS_POPUP));
+}
+
+void ActionProvider::hideSettingsPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_SETTINGS_POPUP));
+}
+
+void ActionProvider::showChat() {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_CHAT));
+}
+
+void ActionProvider::hideChat() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_CHAT));
 }

@@ -10,12 +10,29 @@ import NetworkAlbum 1.0
 Page {
     header: NToolBar {
         pageTitle: AlbumStore.albumPageTitle
+        showChat: AlbumStore.showChat
         onBackButtonClicked: {
             if(AlbumStore.albumUrl.toString().toLowerCase() === folderModel.folder.toString().toLowerCase()) {
                 parent.StackView.view.pop()
+                ActionProvider.returnToAlbumsPage()
             } else {
                 ActionProvider.openFolder(folderModel.parentFolder)
             }
+        }
+        onOpenSettings: {
+            ActionProvider.showSettingsPopup()
+        }
+        onShareAlbum: {
+            ActionProvider.showLinkPopup(-1)
+        }
+        onOpenInExplorer: {
+            ActionProvider.openInExplorer()
+        }
+        onOpenChat: {
+            ActionProvider.showChat()
+        }
+        onHideChat: {
+            ActionProvider.hideChat()
         }
     }
     property var imagesModel
@@ -45,19 +62,18 @@ Page {
                                               imagesText.height + gridImages.height +
                                               folderText.anchors.topMargin + gridFolders.anchors.topMargin +
                                               imagesText.anchors.topMargin + gridImages.anchors.topMargin + 10
-
         Rectangle {
             anchors.fill: parent
             color: "#2F3136"
         }
-
         Rectangle {
             id: chatRect
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            width: 350
+            width: AlbumStore.showChat ? 350 : 0
             color: "#36393F"
+            visible: AlbumStore.showChat
             NChat {
                 anchors.fill: parent
                 chatModel: AlbumStore.conversationModel

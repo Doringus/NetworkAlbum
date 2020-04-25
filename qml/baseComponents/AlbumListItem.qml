@@ -7,9 +7,11 @@ Item {
 
     property string imagePath: "none"
     property string albumName: "Новый альбом"
+    property string notifications: "0"
 
     signal clicked()
     signal showLink()
+    signal showReserve()
 
     width: 330
     height: 210
@@ -71,6 +73,29 @@ Item {
             elide: Text.ElideRight
             font.weight: Font.DemiBold
         }
+        Rectangle {
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 20
+            anchors.bottomMargin: 20
+            width: 40
+            height: 40
+            radius: 20
+            color: "#F04747"
+            visible: notifications != "0"
+            Label {
+                anchors.fill: parent
+                elide: Text.ElideRight
+                color: "white"
+                text: notifications
+                font.weight: Font.Medium
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 14
+                visible: notifications != "0"
+            }
+        }
+
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
@@ -101,7 +126,8 @@ Item {
                 topPadding: 10
 
                 Action { text: qsTr("Открыть"); icon.name: "\uf07c"; onTriggered: root.clicked()}
-                Action { text: qsTr("Копировать ссылку"); icon.name: "\uf064"; onTriggered:  root.showLink()}
+                Action { text: qsTr("Открыть резервную папку"); icon.name: "\uf115"; onTriggered:  root.showReserve();}
+                Action { text: qsTr("Копировать ссылку"); icon.name: "\uf064"; onTriggered:  root.showLink()}               
                 Action { text: qsTr("Закрыть альбом"); icon.name: "\uf00d";}
 
                 delegate: NMenuItem{}

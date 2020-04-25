@@ -4,22 +4,22 @@
 #include "middleware.h"
 
 
-int Dispatcher::addStore(const QString& storeName, const QSharedPointer<Store>& store) {
-    m_Stores.insert(storeName, store);
+int Dispatcher::addStore(const QSharedPointer<Store>& store) {
+    m_Stores.append(store);
     return m_Stores.size() - 1;
 }
 
-int Dispatcher::addMiddleware(const QString& middlewareName, const QSharedPointer<Middleware>& middleware) {
-    m_Middlewares.insert(middlewareName, middleware);
+int Dispatcher::addMiddleware(const QSharedPointer<Middleware>& middleware) {
+    m_Middlewares.append(middleware);
     return m_Middlewares.size() - 1;
 }
 
-void Dispatcher::removeMiddleware(const QString& middlewareName) {
-    m_Middlewares.remove(middlewareName);
+void Dispatcher::removeMiddleware(const QSharedPointer<Middleware>& middleware) {
+    m_Middlewares.removeOne(middleware);
 }
 
-void Dispatcher::removeStore(const QString& storeName) {
-    m_Stores.remove(storeName);
+void Dispatcher::removeStore(const QSharedPointer<Store>& store) {
+    m_Stores.removeOne(store);
 }
 
 Dispatcher::Dispatcher() {

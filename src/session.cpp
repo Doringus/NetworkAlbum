@@ -1,12 +1,18 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDebug>
+#include <QFileInfo>
 
 #include "session.h"
 
 Session::Session(QUrl albumPath, bool hasCopy, double compress)
     : m_AlbumPath(albumPath), m_HasCopy(hasCopy), m_Compress(compress) {
     m_Conversation = new ConversationModel();
+    QFileInfo info(albumPath.toLocalFile());
+    if(hasCopy) {
+        QString reserveFolder = info.absoluteDir().path() + "/" + info.fileName() + "_res";
+        m_AlbumReserveFolder = QUrl(reserveFolder);
+    }
 }
 
 Session::~Session() {
@@ -20,7 +26,8 @@ Session::Session(const Session &other)
       m_GlobalLink(other.getGlobalLink()),
       m_LocalLink(other.getLocalLink()),
       m_SessionId(other.getSessionId()),
-      m_Conversation(other.getConversation()){
+      m_Conversation(other.getConversation()),
+      m_AlbumReserveFolder(other.getAlbumReservePath()){
 
 }
 
@@ -30,6 +37,10 @@ void Session::closeSession() {
 
 QUrl Session::getAlbumPath() const {
     return m_AlbumPath;
+}
+
+QUrl Session::getAlbumReservePath() const {
+    return m_AlbumReserveFolder;
 }
 
 bool Session::hasCopy() const {
@@ -50,6 +61,10 @@ QString Session::getLocalLink() const {
 
 QString Session::getSessionId() const {
     return m_SessionId;
+}
+
+QString Session::getReserveFolder() const {
+    return m_ReserveFolder;
 }
 
 ConversationModel *Session::getConversation() const {

@@ -16,6 +16,9 @@ public:
 
     Q_INVOKABLE void createSession(QString albumPath, bool hasCopy, double compress);
     Q_INVOKABLE void openAlbum(int index);
+    Q_INVOKABLE void openReserveAlbum(int index);
+    Q_INVOKABLE void openInExplorer();
+    Q_INVOKABLE void returnToAlbumsPage();
     Q_INVOKABLE void openFolder(QUrl folderUrl);
     Q_INVOKABLE void hideCreateSessionPopup();
     Q_INVOKABLE void openCreateSessionPopup();
@@ -43,6 +46,10 @@ public:
     Q_INVOKABLE void sendMessage(QString message);
     Q_INVOKABLE void showLinkPopup(int index);
     Q_INVOKABLE void hideLinkPopup();
+    Q_INVOKABLE void showSettingsPopup();
+    Q_INVOKABLE void hideSettingsPopup();
+    Q_INVOKABLE void showChat();
+    Q_INVOKABLE void hideChat();
 private:
     ActionProvider() = default;
     ~ActionProvider() = default;

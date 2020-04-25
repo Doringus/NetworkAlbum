@@ -21,18 +21,18 @@ Completed features
 - Multithreaded server
 - All image manipulations on client: renaming, moving in folders
 - Sending changes on server
+- Settings page
 
 In progress
 ==========
 - Saving images after synchronizing in different folder (if option is on)
-- Settings page
 - Help page
 - Easter egg
 - Some ui/ux features
 
 Bugs
 ====
-- Random crashes when it is creating session (because of incorrect usage of iterators). Will be fixed in next commit
+- Random crashes when it is creating session (because of incorrect usage of iterators). - Fixed
 
 Screenshots
 ===========

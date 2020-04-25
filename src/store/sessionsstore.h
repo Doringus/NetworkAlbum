@@ -24,6 +24,8 @@ public:
     void process(const QSharedPointer<Action>& action);
     const Session& getCurrentSession();
     const Session& getSession(int index);
+    int getCurrentIndex();
+    int getSessionIndex(const QString& link);
 signals:
 
 private:
@@ -33,6 +35,7 @@ private:
     void processReceiveSync(const networkMessage_t&& message);
     void processSendMessage(const QString& message);
     void processReceiveMessage(const networkMessage_t&& message);
+    bool copyFolder(const QString& from, const QString& to);
 private:
     QList<Session> m_Sessions;
     int m_CurrentAlbumIndex;
