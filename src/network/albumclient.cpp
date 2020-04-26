@@ -65,6 +65,13 @@ void AlbumClient::sendConversation(const QString &message) {
                 .toJson(QJsonDocument::Compact));
 }
 
+void AlbumClient::sendCloseSession() {
+    sendMessage(QJsonDocument(createMessage(static_cast<int>(NetworkActionTypes::DISCONNECT), ""))
+                .toJson(QJsonDocument::Compact));
+    m_Socket->disconnect();
+    deleteLater();
+}
+
 void AlbumClient::onReadyRead() {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     if(socket == nullptr) {
@@ -89,6 +96,7 @@ void AlbumClient::onDisconnected() {
 }
 
 void AlbumClient::disconnectClient() {
+    m_Socket->disconnect();
     if(m_HasAuth) {
         emit disconnected(m_Link);
     }
@@ -96,13 +104,13 @@ void AlbumClient::disconnectClient() {
 }
 
 void AlbumClient::handleMessage(const QString& message) {
-    qDebug() << this << "Received message";
     QJsonDocument messageDocument = QJsonDocument::fromJson(message.toUtf8());
     if(messageDocument.isNull()) {
         disconnectClient();
     }
     QJsonObject messageObject = messageDocument.object();
     int type = messageObject.value("MessageType").toInt();
+    qDebug() << this << "Received message" << messageObject;
     if(m_HasAuth) {
         switch (static_cast<NetworkActionTypes>(type)) {
             case NetworkActionTypes::SYNC: {

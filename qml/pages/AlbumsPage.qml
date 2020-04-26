@@ -32,6 +32,14 @@ Page {
             onAboutToHide: ActionProvider.hideSettingsPopup()
         }
 
+        AlbumWarningPopup {
+            id: warningPopup
+            onCloseAlbum: {
+                ActionProvider.closeSession(grid.currentIndex)
+                close()
+            }
+        }
+
         Popup {
             id: codePopup
             width: 440
@@ -112,6 +120,7 @@ Page {
                 albumName: model.albumName
                 imagePath: model.titleImage
                 notifications: model.notifications
+                sync: model.isSync
                 onClicked: {
                     ActionProvider.openAlbum(index)
                     openAlbum()
@@ -121,6 +130,11 @@ Page {
                 }
                 onShowReserve: {
                     ActionProvider.openReserveAlbum(index)
+                    openAlbum()
+                }
+                onCloseAlbum: {
+                    warningPopup.open()
+                    grid.currentIndex = index
                 }
             }
         }

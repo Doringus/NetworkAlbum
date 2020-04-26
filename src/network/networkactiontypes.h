@@ -7,7 +7,8 @@ enum class NetworkActionTypes {
     AUTHORIZATION,
     ALBUM_IMAGES,
     SYNC,
-    CONVERSATION
+    CONVERSATION,
+    DISCONNECT
 };
 
 struct networkMessage_t {

@@ -15,6 +15,7 @@ public:
     explicit Server(QObject *parent = nullptr);
     ~Server();
     void addSessionLink(const QString& link);
+    void removeSessionLink(int index);
     void sendImages(const networkMessage_t& message);
     void sendMessage(const networkMessage_t& message);
 public slots:
@@ -26,7 +27,7 @@ public slots:
 protected:
     virtual void incomingConnection(qintptr descriptor) override;
 private:
-    QSet<QString> m_Links;
+    QList<QString> m_Links;
     QVector<QThread*> m_Threads;
     QMap<QString, AlbumClient*> m_Clients;
     const int THREAD_COUNT = 2;

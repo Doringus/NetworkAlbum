@@ -23,9 +23,11 @@ QSharedPointer<Action> ClientNetworkAccessMiddleware::process(const QSharedPoint
         }
         case ActionType::SEND_SYNC_DATA: {
             processSendSyncData(action->getData<QList<QPair<QString, QString>>>());
+            break;
         }
         case ActionType::SEND_MESSAGE: {
             processSendMessage(action->getData<QString>());
+            break;
         }
     }
     return action;

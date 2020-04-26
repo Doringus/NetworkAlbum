@@ -15,6 +15,8 @@ public:
 private:
     Session processCreateSession(QList<QVariant> data);
     QString validateUrl(QUrl url);
+    bool copyFolder(const QString& from, const QString& to);
+private:
     QList<QUrl> m_SessionsUrlCache;
 signals:
 

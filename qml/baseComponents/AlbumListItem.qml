@@ -8,10 +8,12 @@ Item {
     property string imagePath: "none"
     property string albumName: "Новый альбом"
     property string notifications: "0"
+    property bool sync: true
 
     signal clicked()
     signal showLink()
     signal showReserve()
+    signal closeAlbum()
 
     width: 330
     height: 210
@@ -73,6 +75,18 @@ Item {
             elide: Text.ElideRight
             font.weight: Font.DemiBold
         }
+        Label {
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            anchors.leftMargin: 20
+            color: "#E19517"
+            font.family: "FontAwesome"
+            text: "\uf071"
+            font.pointSize: 18
+            visible: sync
+        }
+
         Rectangle {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
@@ -128,7 +142,7 @@ Item {
                 Action { text: qsTr("Открыть"); icon.name: "\uf07c"; onTriggered: root.clicked()}
                 Action { text: qsTr("Открыть резервную папку"); icon.name: "\uf115"; onTriggered:  root.showReserve();}
                 Action { text: qsTr("Копировать ссылку"); icon.name: "\uf064"; onTriggered:  root.showLink()}               
-                Action { text: qsTr("Закрыть альбом"); icon.name: "\uf00d";}
+                Action { text: qsTr("Закрыть альбом"); icon.name: "\uf00d"; onTriggered: root.closeAlbum()}
 
                 delegate: NMenuItem{}
                 background: Rectangle {

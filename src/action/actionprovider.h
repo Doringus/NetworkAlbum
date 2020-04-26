@@ -15,6 +15,7 @@ public:
     }
 
     Q_INVOKABLE void createSession(QString albumPath, bool hasCopy, double compress);
+    Q_INVOKABLE void closeSession(int index);
     Q_INVOKABLE void openAlbum(int index);
     Q_INVOKABLE void openReserveAlbum(int index);
     Q_INVOKABLE void openInExplorer();

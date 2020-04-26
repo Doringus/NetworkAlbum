@@ -14,6 +14,7 @@
 class SessionsStore : public QObject, public Store  {
     Q_OBJECT 
 public:
+    ~SessionsStore();
     SessionsStore(const SessionsStore&) = delete;
     SessionsStore& operator=(const SessionsStore&) = delete;
 
@@ -30,12 +31,12 @@ signals:
 
 private:
     SessionsStore();
-    void processCreateSession(const Session& session);
+    void processCreateSession(const Session &session);
     void processSendImages(networkMessage_t&& message);
     void processReceiveSync(const networkMessage_t&& message);
     void processSendMessage(const QString& message);
     void processReceiveMessage(const networkMessage_t&& message);
-    bool copyFolder(const QString& from, const QString& to);
+    void processCloseSession(int index);
 private:
     QList<Session> m_Sessions;
     int m_CurrentAlbumIndex;

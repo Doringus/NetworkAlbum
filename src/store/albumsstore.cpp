@@ -15,6 +15,10 @@ void AlbumsStore::process(const QSharedPointer<Action> &action) {
             }
             break;
         }
+        case ActionType::CLOSE_SESSION: {
+            m_Albums.removeAlbum(action->getData<int>());
+            break;
+        }
         case ActionType::SHOW_LINK_POPUP: {
             processShowAlbumLinks(action->getData<int>());
             setShowLinkPopupVisibility(true);
@@ -30,12 +34,12 @@ void AlbumsStore::process(const QSharedPointer<Action> &action) {
         }
         case ActionType::OPEN_ALBUM: {
             m_CurrentAlbumIndex = action->getData<int>();
-            m_Albums.clearNotifications(m_CurrentAlbumIndex);
+            m_Albums.clearNotifications(m_CurrentAlbumIndex, false);
             break;
         }
         case ActionType::OPEN_RESERVE_ALBUM: {
             m_CurrentAlbumIndex = action->getData<int>();
-            m_Albums.clearNotifications(m_CurrentAlbumIndex);
+            m_Albums.clearNotifications(m_CurrentAlbumIndex, true);
             break;
         }
         case ActionType::RETURN_TO_ALBUMS_PAGE: {
@@ -53,6 +57,10 @@ void AlbumsStore::process(const QSharedPointer<Action> &action) {
         }
         case ActionType::HIDE_SETTINGS_POPUP: {
             setSettingPopupVisibility(false);
+            break;
+        }
+        case ActionType::RECEIVE_SYNC_DATA: {
+            processImageSync(action->getData<networkMessage_t>().clientLink);
             break;
         }
     }
@@ -89,7 +97,7 @@ void AlbumsStore::processAddAlbum(const Session& session) {
     if(files.size() != 0) {
         titleImageUrl = QUrl::fromLocalFile(files.first().filePath());
     }
-    m_Albums.add(session.getAlbumPath().fileName(), titleImageUrl);
+    m_Albums.add(session.getAlbumPath().fileName(), titleImageUrl, session.hasCopy());
 }
 
 void AlbumsStore::setShowLinkPopupVisibility(bool visible) {
@@ -124,4 +132,11 @@ void AlbumsStore::setSettingPopupVisibility(bool visible) {
 void AlbumsStore::setShowAlbumSettings(bool visible) {
     m_ShowAlbumSettings = visible;
     emit showAlbumSettingsChanged();
+}
+
+void AlbumsStore::processImageSync(const QString &link) {
+    int sessionIndex = SessionsStore::get().getSessionIndex(link);
+    if(m_CurrentAlbumIndex != sessionIndex && sessionIndex != -1) {
+        m_Albums.addSynchNotification(sessionIndex);
+    }
 }

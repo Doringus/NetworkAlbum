@@ -15,6 +15,12 @@ NetworkAccessMiddleware::NetworkAccessMiddleware(QObject *parent) : QObject(pare
 
 QSharedPointer<Action> NetworkAccessMiddleware::process(const QSharedPointer<Action> &action) {
     switch(action->getType<ActionType>()) {
+        case ActionType::CREATE_SESSION: {
+            if(action->getErrorString() == "") {
+                m_Server->addSessionLink(action->getData<Session>().getSessionId());
+            }
+            break;
+        }
         case ActionType::SEND_IMAGES: {
             if(action->getErrorString() == "") {
                 m_Server->sendImages(action->getData<networkMessage_t>());
@@ -25,13 +31,12 @@ QSharedPointer<Action> NetworkAccessMiddleware::process(const QSharedPointer<Act
             m_Server->sendMessage(action->getData<networkMessage_t>());
             break;
         }
-        case ActionType::REGISTER_LINK: {
-            m_Server->addSessionLink(action->getData<QString>());
-            qDebug() << this << "Link registered" << action->getData<QString>();
-            break;
-        }
         case ActionType::START_SERVER: {
             m_Server->listen(QHostAddress::Any, 22222);
+            break;
+        }
+        case ActionType::CLOSE_SESSION: {
+            m_Server->removeSessionLink(action->getData<int>());
             break;
         }
     }

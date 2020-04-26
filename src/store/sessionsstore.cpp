@@ -16,6 +16,12 @@ SessionsStore::SessionsStore() {
 }
 
 
+SessionsStore::~SessionsStore() {
+    foreach(Session session, m_Sessions) {
+        session.closeSession();
+    }
+}
+
 void SessionsStore::process(const QSharedPointer<Action> &action) {
     switch (action->getType<ActionType>()) {
         case ActionType::CREATE_SESSION: {
@@ -42,6 +48,10 @@ void SessionsStore::process(const QSharedPointer<Action> &action) {
         }
         case ActionType::RECEIVE_MESSAGE: {
             processReceiveMessage(action->getData<networkMessage_t>());
+            break;
+        }
+        case ActionType::CLOSE_SESSION: {
+            processCloseSession(action->getData<int>());
             break;
         }
     }
@@ -75,7 +85,7 @@ void SessionsStore::processCreateSession(const Session& session) {
         return;
     }
     m_Sessions.append(session);
-    Dispatcher::get().dispatch(new Action(ActionType::REGISTER_LINK, QVariant::fromValue(session.getSessionId())));
+  //  Dispatcher::get().dispatch(new Action(ActionType::REGISTER_LINK, QVariant::fromValue(session.getSessionId())));
 }
 
 void SessionsStore::processSendImages(networkMessage_t&& message) {
@@ -116,7 +126,11 @@ void SessionsStore::processReceiveSync(const networkMessage_t &&message) {
             QJsonObject changeObject = arr.at(i).toObject();
             changes.append({changeObject.value("NewPath").toString(), changeObject.value("OldPath").toString()});
         }
-        m_ImageMover->moveImageAsynch(changes, it->getAlbumPath().toLocalFile());
+        if(it->hasCopy()) {
+            m_ImageMover->moveImageAsynch(changes, it->getAlbumReservePath().toLocalFile());
+        } else {
+            m_ImageMover->moveImageAsynch(changes, it->getAlbumPath().toLocalFile());
+        }
     }
 }
 
@@ -133,42 +147,13 @@ void SessionsStore::processReceiveMessage(const networkMessage_t &&message) {
         return session.getSessionId() == message.clientLink;
     });
     if(it != m_Sessions.end()){
+        qDebug() << message.data.toString();
         it->getConversation()->add(message.data.toString(), false);
     }
 }
 
-bool SessionsStore::copyFolder(const QString& from, const QString& to) {
-    bool success = false;
-    QDir sourceDir(from);
-    if(!sourceDir.exists()) {
-        return false;
-    }
-    QDir destDir(to);
-    if(destDir.exists()) {
-        destDir.removeRecursively();
-    }
-    destDir.mkdir(to);
-    QStringList files = sourceDir.entryList(QDir::Files);
-    for(int i = 0; i< files.count(); i++) {
-        QString srcName = from + QDir::separator() + files[i];
-        QString destName = to + QDir::separator() + files[i];
-        success = QFile::copy(srcName, destName);
-        if(!success) {
-            return false;
-        }
-
-    }
-    files.clear();
-    files = sourceDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-    for(int i = 0; i< files.count(); i++)
-    {
-        QString srcName = from + QDir::separator() + files[i];
-        QString destName = to + QDir::separator() + files[i];
-        success = copyFolder(srcName, destName);
-        if(!success) {
-            return false;
-        }
-
-    }
-    return true;
+void SessionsStore::processCloseSession(int index) {
+    QString link = m_Sessions.at(index).getSessionId();
+    m_Sessions[index].closeSession();
+    m_Sessions.removeAt(index);
 }

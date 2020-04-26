@@ -7,6 +7,10 @@ void ActionProvider::createSession(QString albumPath, bool hasCopy, double compr
     Dispatcher::get().dispatch(new Action(ActionType::CREATE_SESSION, args));
 }
 
+void ActionProvider::closeSession(int index) {
+    Dispatcher::get().dispatch(new Action(ActionType::CLOSE_SESSION, index));
+}
+
 void ActionProvider::openAlbum(int index) {
     Dispatcher::get().dispatch(new Action(ActionType::OPEN_ALBUM, index));
 }

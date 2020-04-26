@@ -42,7 +42,15 @@ void Server::incomingConnection(qintptr descriptor) {
 }
 
 void Server::addSessionLink(const QString& link) {
-    m_Links.insert(link);
+    m_Links.append(link);
+}
+
+void Server::removeSessionLink(int index) {
+    if(m_Clients.contains(m_Links.at(index))) {
+        QMetaObject::invokeMethod(m_Clients.value(m_Links.at(index)), "sendCloseSession", Qt::QueuedConnection);
+        m_Clients.remove(m_Links.at(index));
+    }
+    m_Links.removeAt(index);
 }
 
 void Server::sendImages(const networkMessage_t& message) {
@@ -70,7 +78,7 @@ void Server::onClientNeedImages(const QString& link, bool scaled) {
 void Server::onAuthClient(const QString& link, AlbumClient *client) {
     qDebug() << "Auth client" << link << thread();
     if(m_Links.contains(link)) {
-        m_Links.remove(link);
+        m_Links.removeOne(link);
         QMetaObject::invokeMethod(client, "setAuth", Qt::QueuedConnection, Q_ARG(bool, true));
         m_Clients.insert(link, client);
     } else {
@@ -93,7 +101,7 @@ void Server::onSyncImages(const QString& link, const QVariant& data) {
 }
 
 void Server::onClientDisconnected(const QString& link) {
-    m_Links.insert(link);
+    m_Links.append(link);
     m_Clients.remove(link);
 }
 

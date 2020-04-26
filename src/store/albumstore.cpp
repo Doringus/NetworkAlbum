@@ -79,7 +79,7 @@ bool AlbumStore::getShowChat() {
 void AlbumStore::processOpenAlbum() {
     QUrl albumPath = SessionsStore::get().getCurrentSession().getAlbumPath();
     m_Conversation = SessionsStore::get().getCurrentSession().getConversation();
-    m_AlbumReserveFolder = SessionsStore::get().getCurrentSession().getReserveFolder();
+    m_AlbumReserveFolder = SessionsStore::get().getCurrentSession().getAlbumReservePath().toLocalFile();
     m_AlbumPageTitle = albumPath.fileName();
     m_CurrentAlbumUrl = albumPath;
     m_CurrentFolderUrl = albumPath;

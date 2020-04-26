@@ -21,7 +21,6 @@ public:
     QString getGlobalLink() const;
     QString getLocalLink() const;
     QString getSessionId() const;
-    QString getReserveFolder() const;
     ConversationModel* getConversation() const;
 
     void setAlbumPath(const QUrl& url);
@@ -29,6 +28,7 @@ public:
     void setLocalLink(const QString& link);
     void setConversation(ConversationModel *conversation);
     void setSessionId(const QString& id);
+    void setHasCopy(bool copy);
     void setIndex(int index);
 
     friend bool operator==(const Session& left, const Session& right) {
@@ -41,7 +41,6 @@ private:
     bool m_HasCopy;
     double m_Compress;
     QString m_GlobalLink, m_SessionId, m_LocalLink;
-    QString m_ReserveFolder;
     ConversationModel *m_Conversation;
 };
 

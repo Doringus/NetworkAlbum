@@ -23,3 +23,4 @@ void ImageMover::moveImageAsynch(const QList<QPair<QString, QString>>& changes, 
         m_Watcher->setFuture(QtConcurrent::run(moveImages, changes, albumPath));
     }
 }
+

@@ -14,6 +14,7 @@ public:
 public slots:
     void sendImages(const QList<QJsonObject>& images);
     void sendConversation(const QString& message);
+    void sendCloseSession();
 private slots:
     void onReadyRead();
     void onConnected();

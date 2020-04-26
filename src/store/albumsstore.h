@@ -46,6 +46,7 @@ private:
     void processReceiveMessage(const QString& link);
     void setSettingPopupVisibility(bool visible);
     void setShowAlbumSettings(bool visible);
+    void processImageSync(const QString& link);
 private:
     AlbumsListModel m_Albums;
     int m_CurrentAlbumIndex = -1;

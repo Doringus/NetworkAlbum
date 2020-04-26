@@ -11,7 +11,9 @@ Session::Session(QUrl albumPath, bool hasCopy, double compress)
     QFileInfo info(albumPath.toLocalFile());
     if(hasCopy) {
         QString reserveFolder = info.absoluteDir().path() + "/" + info.fileName() + "_res";
-        m_AlbumReserveFolder = QUrl(reserveFolder);
+        m_AlbumReserveFolder = QUrl::fromLocalFile(reserveFolder);
+    } else {
+        m_AlbumReserveFolder = albumPath;
     }
 }
 
@@ -63,10 +65,6 @@ QString Session::getSessionId() const {
     return m_SessionId;
 }
 
-QString Session::getReserveFolder() const {
-    return m_ReserveFolder;
-}
-
 ConversationModel *Session::getConversation() const {
     return m_Conversation;
 }
@@ -89,5 +87,9 @@ void Session::setConversation(ConversationModel *conversation) {
 
 void Session::setSessionId(const QString &id) {
     m_SessionId = id;
+}
+
+void Session::setHasCopy(bool copy) {
+    m_HasCopy = copy;
 }
 
