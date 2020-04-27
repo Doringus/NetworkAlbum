@@ -12,8 +12,8 @@ Popup {
     property alias closableWindow: windowToggle.checked
     property bool showAlbumSettings: false
     property string albumReserveFolder
-    property bool notificationCache
-    property bool closableCache
+    property bool notificationCache: notificationToggle.checked
+    property bool closableCache: windowToggle.checked
 
     signal saveSettings()
 

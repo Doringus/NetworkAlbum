@@ -8,6 +8,7 @@
 Session::Session(QUrl albumPath, bool hasCopy, double compress)
     : m_AlbumPath(albumPath), m_HasCopy(hasCopy), m_Compress(compress) {
     m_Conversation = new ConversationModel();
+    m_ChangesHistory = new ChangesHistoryModel();
     QFileInfo info(albumPath.toLocalFile());
     if(hasCopy) {
         QString reserveFolder = info.absoluteDir().path() + "/" + info.fileName() + "_res";
@@ -29,12 +30,14 @@ Session::Session(const Session &other)
       m_LocalLink(other.getLocalLink()),
       m_SessionId(other.getSessionId()),
       m_Conversation(other.getConversation()),
-      m_AlbumReserveFolder(other.getAlbumReservePath()){
+      m_AlbumReserveFolder(other.getAlbumReservePath()),
+      m_ChangesHistory(other.getChangesHistory()){
 
 }
 
 void Session::closeSession() {
     m_Conversation->deleteLater();
+    m_ChangesHistory->deleteLater();
 }
 
 QUrl Session::getAlbumPath() const {
@@ -67,6 +70,10 @@ QString Session::getSessionId() const {
 
 ConversationModel *Session::getConversation() const {
     return m_Conversation;
+}
+
+ChangesHistoryModel *Session::getChangesHistory() const {
+    return m_ChangesHistory;
 }
 
 void Session::setAlbumPath(const QUrl& url) {

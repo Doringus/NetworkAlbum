@@ -15,6 +15,7 @@ Item {
     signal openInExplorer()
     signal openChat()
     signal hideChat()
+    signal openHistory()
 
     Rectangle {
         id: componentTitle
@@ -59,6 +60,13 @@ Item {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.rightMargin: 20
+            NToolButton {
+                Layout.alignment: Qt.AlignLeft
+                icon: "\uf1da"
+                pointSize: 16
+                toolTip: "История изменений"
+                onClicked: openHistory()
+            }
             NToolButton {
                 Layout.alignment: Qt.AlignLeft
                 icon: "\uf07c"

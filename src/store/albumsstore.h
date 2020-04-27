@@ -15,7 +15,6 @@ public:
     Q_PROPERTY(QString albumGlobalLink READ getAlbumGlobalLink NOTIFY albumGlobalLinkChanged)
     Q_PROPERTY(QString albumLocalLink READ getAlbumLocalLink NOTIFY albumLocalLinkChanged)
     Q_PROPERTY(QAbstractListModel* albumsModel READ getAlbumsModel NOTIFY albumsModelChanged)
-
 public:
     AlbumsStore(const AlbumsStore&) = delete;
     AlbumsStore& operator=(const AlbumsStore&) = delete;

@@ -2,6 +2,8 @@
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QMessageBox>
+#include <QApplication>
 
 #include "../network/server.h"
 #include "../network/albumlinkfactory.h"
@@ -32,7 +34,15 @@ QSharedPointer<Action> NetworkAccessMiddleware::process(const QSharedPointer<Act
             break;
         }
         case ActionType::START_SERVER: {
-            m_Server->listen(QHostAddress::Any, 22222);
+            if(!m_Server->listen(QHostAddress::Any, 22222)){
+                QMessageBox box;
+                box.setText("Ошибка");
+                box.setInformativeText("Не удалось запустить сервер");
+                box.setIcon(QMessageBox::Critical);
+                box.setStandardButtons(QMessageBox::Ok);
+                box.exec();
+                QApplication::quit();
+            }
             break;
         }
         case ActionType::CLOSE_SESSION: {

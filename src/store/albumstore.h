@@ -6,6 +6,7 @@
 #include "../base/store.h"
 #include "../albumslistmodel.h"
 #include "../session.h"
+#include "../changeshistorymodel.h"
 
 class AlbumStore : public QObject, public Store {
     Q_OBJECT
@@ -18,6 +19,7 @@ public:
     Q_PROPERTY(QAbstractListModel* conversationModel READ getConversationModel NOTIFY conversationModelChanged)
     Q_PROPERTY(QString albumReserveFolder READ albumReserveFolder NOTIFY albumReserveFolderChanged)
     Q_PROPERTY(bool showChat READ getShowChat NOTIFY showChatChanged)
+    Q_PROPERTY(QAbstractListModel* historyModel READ getHistoryModel NOTIFY historyModelChanged)
 public:
     AlbumStore(const AlbumStore&) = delete;
     AlbumStore& operator=(const AlbumStore&) = delete;
@@ -36,6 +38,7 @@ public:
     QAbstractListModel* getConversationModel();
     QString albumReserveFolder();
     bool getShowChat();
+    QAbstractListModel* getHistoryModel();
 signals:
     void albumUrlChanged();
     void currentFolderUrlChanged();
@@ -45,6 +48,7 @@ signals:
     void conversationModelChanged();
     void albumReserveFolderChanged();
     void showChatChanged();
+    void historyModelChanged();
 private:
     AlbumStore() = default;
     void processOpenAlbum();
@@ -59,6 +63,7 @@ private:
     QUrl m_CurrentAlbumUrl, m_CurrentFolderUrl, m_ImageUrl;
     QString m_AlbumPageTitle;
     ConversationModel *m_Conversation;
+    ChangesHistoryModel *m_ChangesHistory;
     QString m_AlbumReserveFolder;
     bool m_ShowImagePopup, m_ShowChat = true;
 };

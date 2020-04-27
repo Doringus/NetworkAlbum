@@ -5,6 +5,7 @@ import Qt.labs.folderlistmodel 2.14
 import QtQml.Models 2.14
 
 import "../baseComponents"
+import "../popups"
 import NetworkAlbum 1.0
 
 Page {
@@ -34,8 +35,16 @@ Page {
         onHideChat: {
             ActionProvider.hideChat()
         }
+        onOpenHistory: {
+            changesHistory.open()
+        }
     }
     property var imagesModel
+
+    ChangesHistoryPopup {
+        id: changesHistory
+        historyModel: AlbumStore.historyModel
+    }
 
     Popup {
         id: imageViewPopup

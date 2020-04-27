@@ -33,8 +33,8 @@
         <file>qml/popups/RenamePopup.qml</file>
         <file>qml/popups/LinkPopup.qml</file>
         <file>qml/popups/ServerSettingsPopup.qml</file>
-        <file>qml/popups/HistoryPopup.qml</file>
         <file>qml/popups/AlbumWarningPopup.qml</file>
         <file>res/albumIcon.jpg</file>
+        <file>qml/popups/ChangesHistoryPopup.qml</file>
     </qresource>
 </RCC>

@@ -52,6 +52,7 @@ public:
     Q_INVOKABLE void showChat();
     Q_INVOKABLE void hideChat();
     Q_INVOKABLE void saveSettings(bool showNotifications, bool closeWindow);
+    Q_INVOKABLE void closeWindow();
 private:
     ActionProvider() = default;
     ~ActionProvider() = default;

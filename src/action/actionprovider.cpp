@@ -156,3 +156,7 @@ void ActionProvider::saveSettings(bool showNotifications, bool closeWindow) {
     QPair<bool, bool> msg = {showNotifications, closeWindow};
     Dispatcher::get().dispatch(new Action(ActionType::SAVE_SETTINGS, QVariant::fromValue<QPair<bool, bool>>(msg)));
 }
+
+void ActionProvider::closeWindow() {
+    Dispatcher::get().dispatch(new Action(ActionType::CLOSE_WINDOW));
+}

@@ -5,6 +5,7 @@
 #include <QHash>
 
 #include "conversationmodel.h"
+#include "changeshistorymodel.h"
 
 class Session {
 public:
@@ -22,6 +23,7 @@ public:
     QString getLocalLink() const;
     QString getSessionId() const;
     ConversationModel* getConversation() const;
+    ChangesHistoryModel *getChangesHistory() const;
 
     void setAlbumPath(const QUrl& url);
     void setGlobalLink(const QString& link);
@@ -42,6 +44,7 @@ private:
     double m_Compress;
     QString m_GlobalLink, m_SessionId, m_LocalLink;
     ConversationModel *m_Conversation;
+    ChangesHistoryModel *m_ChangesHistory;
 };
 
 Q_DECLARE_METATYPE(Session)

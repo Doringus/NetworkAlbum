@@ -20,6 +20,7 @@ ApplicationWindow {
         if(NotificationStore.closableWindow) {
             Qt.quit()
         } else {
+            ActionProvider.closeWindow()
             close.accepted = false
             hide()
         }

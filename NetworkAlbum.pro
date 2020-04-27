@@ -17,6 +17,7 @@ SOURCES += \
         src/action/actionprovider.cpp \
         src/albumslistmodel.cpp \
         src/base/dispatcher.cpp \
+        src/changeshistorymodel.cpp \
         src/conversationmodel.cpp \
         src/core.cpp \
         src/displayfilesystemmodel.cpp \
@@ -64,6 +65,7 @@ HEADERS += \
     src/base/dispatcher.h \
     src/base/middleware.h \
     src/base/store.h \
+    src/changeshistorymodel.h \
     src/conversationmodel.h \
     src/core.h \
     src/displayfilesystemmodel.h \

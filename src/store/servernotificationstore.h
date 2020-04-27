@@ -36,6 +36,7 @@ private:
     void processReceiveMessage(networkMessage_t&& message);
     void processReceiveSync(networkMessage_t&& message);
     void processSaveSettings(QPair<bool, bool> msg);
+    void processCloseWindow();
 private:
     QSystemTrayIcon *m_TrayIcon;
     QMenu *m_TrayMenu;

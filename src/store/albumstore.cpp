@@ -76,10 +76,14 @@ bool AlbumStore::getShowChat() {
     return m_ShowChat;
 }
 
+QAbstractListModel* AlbumStore::getHistoryModel() {
+    return m_ChangesHistory;
+}
+
 void AlbumStore::processOpenAlbum() {
     QUrl albumPath = SessionsStore::get().getCurrentSession().getAlbumPath();
     m_Conversation = SessionsStore::get().getCurrentSession().getConversation();
-    m_AlbumReserveFolder = SessionsStore::get().getCurrentSession().getAlbumReservePath().toLocalFile();
+    m_ChangesHistory = SessionsStore::get().getCurrentSession().getChangesHistory();
     m_AlbumPageTitle = albumPath.fileName();
     m_CurrentAlbumUrl = albumPath;
     m_CurrentFolderUrl = albumPath;
@@ -87,7 +91,7 @@ void AlbumStore::processOpenAlbum() {
     emit currentFolderUrlChanged();
     emit albumPageTitleChanged();
     emit conversationModelChanged();
-    emit albumReserveFolderChanged();
+    emit historyModelChanged();
 }
 
 void AlbumStore::processOpenFolder(const QUrl& folder) {
@@ -107,6 +111,7 @@ void AlbumStore::processOpenReserveAlbum() {
     QUrl albumPath = SessionsStore::get().getCurrentSession().getAlbumPath();
     QUrl reserve = SessionsStore::get().getCurrentSession().getAlbumReservePath();
     m_Conversation = SessionsStore::get().getCurrentSession().getConversation();
+    m_ChangesHistory = SessionsStore::get().getCurrentSession().getChangesHistory();
     m_AlbumReserveFolder = reserve.toLocalFile();
     m_AlbumPageTitle = albumPath.fileName();
     m_CurrentAlbumUrl = reserve;
@@ -116,6 +121,7 @@ void AlbumStore::processOpenReserveAlbum() {
     emit albumPageTitleChanged();
     emit conversationModelChanged();
     emit albumReserveFolderChanged();
+    emit historyModelChanged();
 }
 
 void AlbumStore::processOpenInExplorer(){

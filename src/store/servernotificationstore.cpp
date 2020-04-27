@@ -13,6 +13,7 @@ ServerNotificationStore::ServerNotificationStore() {
 
 ServerNotificationStore::~ServerNotificationStore() {
     m_TrayMenu->deleteLater();
+    m_TrayIcon->hide();
 }
 
 void ServerNotificationStore::process(const QSharedPointer<Action> &action) {
@@ -27,6 +28,10 @@ void ServerNotificationStore::process(const QSharedPointer<Action> &action) {
         }
         case ActionType::SAVE_SETTINGS: {
             processSaveSettings(action->getData<QPair<bool, bool>>());
+            break;
+        }
+        case ActionType::CLOSE_WINDOW: {
+            processCloseWindow();
             break;
         }
     }
@@ -77,6 +82,12 @@ void ServerNotificationStore::processSaveSettings(QPair<bool, bool> msg) {
         m_IsWindowClosable = msg.second;
         emit closableWindowChanged();
     }
+}
+
+void ServerNotificationStore::processCloseWindow() {
+    m_TrayIcon->showMessage("Фоновый режим", "Программа будет работать в фоновом режиме. Для отключения этой опции зайдите в настройки",
+                            QSystemTrayIcon::MessageIcon(QSystemTrayIcon::MessageIcon::Information));
+
 }
 
 

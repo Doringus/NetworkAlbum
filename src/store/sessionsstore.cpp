@@ -125,6 +125,7 @@ void SessionsStore::processReceiveSync(const networkMessage_t &&message) {
         for(int i = 0; i < arr.size(); ++i) {
             QJsonObject changeObject = arr.at(i).toObject();
             changes.append({changeObject.value("NewPath").toString(), changeObject.value("OldPath").toString()});
+            it->getChangesHistory()->add(changeObject.value("OldPath").toString(), changeObject.value("NewPath").toString());
         }
         if(it->hasCopy()) {
             m_ImageMover->moveImageAsynch(changes, it->getAlbumReservePath().toLocalFile());
