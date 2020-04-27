@@ -11,6 +11,7 @@
 #include "store/rootstore.h"
 #include "store/albumsstore.h"
 #include "store/albumstore.h"
+#include "store/servernotificationstore.h"
 
 Core::Core(QObject *parent) : QObject(parent) {
     qRegisterMetaType<qintptr>("qintptr");
@@ -58,6 +59,14 @@ Core::Core(QObject *parent) : QObject(parent) {
         Q_UNUSED(engine)
         Q_UNUSED(jsEngine)
     });
+    qmlRegisterSingletonType<ServerNotificationStore>("NetworkAlbum", 1, 0, "NotificationStore",
+                                             [](QQmlEngine *engine, QJSEngine *jsEngine) -> QObject* {
+        QQmlEngine::setObjectOwnership(&ServerNotificationStore::get(), QQmlEngine::CppOwnership);
+        return &ServerNotificationStore::get();
+        Q_UNUSED(engine)
+        Q_UNUSED(jsEngine)
+    });
+
 
     qmlRegisterSingletonType<ActionProvider>("NetworkAlbum", 1, 0, "ClientStore",
                                              [](QQmlEngine *engine, QJSEngine *jsEngine) -> QObject* {
@@ -84,6 +93,8 @@ Core::Core(QObject *parent) : QObject(parent) {
 
 void Core::onSessionCreated() {
     Dispatcher::get().removeStore(QSharedPointer<Store>(&ClientStore::get(), [](ClientStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<ServerNotificationStore>(&ServerNotificationStore::get(), [](ServerNotificationStore*){}));
+    ServerNotificationStore::get().createTray();
     Dispatcher::get().removeMiddleware(QSharedPointer<Middleware>(m_ClientNetworkMiddleware, [](ClientNetworkAccessMiddleware*){}));
     disconnect(&RootStore::get(), &RootStore::sessionCreated, this, &Core::onSessionCreated);
 }

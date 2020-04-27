@@ -46,5 +46,6 @@ enum class ActionType {
     SHOW_SETTINGS_POPUP,
     HIDE_SETTINGS_POPUP,
     SHOW_CHAT,
-    HIDE_CHAT
+    HIDE_CHAT,
+    SAVE_SETTINGS
 };

@@ -135,6 +135,9 @@ void SessionsStore::processReceiveSync(const networkMessage_t &&message) {
 }
 
 void SessionsStore::processSendMessage(const QString &message) {
+    if(message.trimmed() == "") {
+        return;
+    }
     m_Sessions.at(m_CurrentAlbumIndex).getConversation()->add(message, true);
     networkMessage_t networkMessage;
     networkMessage.clientLink = SessionsStore::get().getCurrentSession().getSessionId();

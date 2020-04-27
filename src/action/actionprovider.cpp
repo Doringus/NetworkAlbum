@@ -151,3 +151,8 @@ void ActionProvider::showChat() {
 void ActionProvider::hideChat() {
     Dispatcher::get().dispatch(new Action(ActionType::HIDE_CHAT));
 }
+
+void ActionProvider::saveSettings(bool showNotifications, bool closeWindow) {
+    QPair<bool, bool> msg = {showNotifications, closeWindow};
+    Dispatcher::get().dispatch(new Action(ActionType::SAVE_SETTINGS, QVariant::fromValue<QPair<bool, bool>>(msg)));
+}

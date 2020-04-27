@@ -3,6 +3,7 @@
 #include <QFontDatabase>
 #include <QDebug>
 #include <QSystemTrayIcon>
+#include <QApplication>
 
 #include "base/action.h"
 #include "base/dispatcher.h"
@@ -14,7 +15,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     QQmlApplicationEngine engine;
     Core core;
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));

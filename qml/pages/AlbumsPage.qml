@@ -30,6 +30,12 @@ Page {
             anchors.centerIn: parent
             visible: AlbumsStore.showSettingsPopup
             onAboutToHide: ActionProvider.hideSettingsPopup()
+            showNotifications: NotificationStore.showNotifications
+            closableWindow: NotificationStore.closableWindow
+            onSaveSettings: {
+                ActionProvider.saveSettings(showNotifications, closableWindow)
+                close()
+            }
         }
 
         AlbumWarningPopup {

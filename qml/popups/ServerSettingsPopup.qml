@@ -8,8 +8,19 @@ import "../baseComponents"
 Popup {
     id: root
 
+    property alias showNotifications: notificationToggle.checked
+    property alias closableWindow: windowToggle.checked
     property bool showAlbumSettings: false
     property string albumReserveFolder
+    property bool notificationCache
+    property bool closableCache
+
+    signal saveSettings()
+
+    onClosed: {
+        notificationToggle.checked = notificationCache
+        windowToggle.checked = closableCache
+    }
 
     height: showAlbumSettings ? 560 : 410
     width: 500
@@ -111,6 +122,7 @@ Popup {
                         anchors.right: parent.right
                         spacing: 20
                         NToggleButton {
+                            id: notificationToggle
                             text: ""
                         }
                         Label {
@@ -124,6 +136,7 @@ Popup {
                         anchors.right: parent.right
                         spacing: 20
                         NToggleButton {
+                            id: windowToggle
                             text: ""
                         }
                         Label {
@@ -141,6 +154,11 @@ Popup {
                 NButton {
                     Layout.alignment: Qt.AlignRight
                     text: "Сохранить"
+                    onClicked: {
+                        notificationCache = notificationToggle.checked
+                        closableCache = windowToggle.checked
+                        saveSettings()
+                    }
                 }
             }
 

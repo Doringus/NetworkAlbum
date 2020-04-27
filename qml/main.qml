@@ -9,11 +9,21 @@ import "popups"
 
 import NetworkAlbum 1.0
 
-Window {
+ApplicationWindow {
+    id: window
     visible: true
     width: 1400
     height: 800
     title: qsTr("Album")
+
+    onClosing: {
+        if(NotificationStore.closableWindow) {
+            Qt.quit()
+        } else {
+            close.accepted = false
+            hide()
+        }
+    }
 
     Connections {
         target: RootStore
@@ -28,6 +38,16 @@ Window {
         onConnectedToAlbum: {
             ActionProvider.hideOpenPopup()
             stackView.push(clientAlbumPage)
+        }
+    }
+
+    Connections {
+        target: NotificationStore
+        onShowWindow: {
+            window.show()
+        }
+        onCloseWindow: {
+            Qt.quit()
         }
     }
 

@@ -1,4 +1,4 @@
-QT += quick quickcontrols2 qml widgets concurrent
+QT += quick quickcontrols2 qml widgets concurrent widgets
 
 CONFIG += c++17
 
@@ -40,6 +40,7 @@ SOURCES += \
         src/store/conversationstore.cpp \
         src/store/linkstore.cpp \
         src/store/rootstore.cpp \
+        src/store/servernotificationstore.cpp \
         src/store/sessionsstore.cpp
 
 RESOURCES += qml.qrc
@@ -86,4 +87,5 @@ HEADERS += \
     src/store/conversationstore.h \
     src/store/linkstore.h \
     src/store/rootstore.h \
+    src/store/servernotificationstore.h \
     src/store/sessionsstore.h
