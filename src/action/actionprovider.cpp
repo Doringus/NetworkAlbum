@@ -160,3 +160,7 @@ void ActionProvider::saveSettings(bool showNotifications, bool closeWindow) {
 void ActionProvider::closeWindow() {
     Dispatcher::get().dispatch(new Action(ActionType::CLOSE_WINDOW));
 }
+
+void ActionProvider::reconnectToAlbum() {
+    Dispatcher::get().dispatch(new Action(ActionType::RECONNECT_TO_ALBUM));
+}

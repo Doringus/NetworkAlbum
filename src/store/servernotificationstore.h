@@ -38,7 +38,7 @@ private:
     void processSaveSettings(QPair<bool, bool> msg);
     void processCloseWindow();
 private:
-    QSystemTrayIcon *m_TrayIcon;
+    QSystemTrayIcon *m_TrayIcon = nullptr;
     QMenu *m_TrayMenu;
     bool m_HasNotifications;
     bool m_IsWindowClosable = true;

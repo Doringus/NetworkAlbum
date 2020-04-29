@@ -9,8 +9,11 @@ import "../popups"
 import NetworkAlbum 1.0
 
 Page {
+
+    property bool warningShown: false
+
     header: NClientToolBar {
-        pageTitle: ClientStore.folderName
+        pageTitle: ClientStore.albumPageTitle
         fileName: ClientStore.fileName
         backButtonVisible: ClientStore.albumUrl.toString().toLowerCase() !== ClientStore.currentFolderUrl.toString().toLowerCase()
         onBackButtonClicked: {
@@ -27,7 +30,40 @@ Page {
         onSendImagesButtonClicked: {
             ActionProvider.syncImages()
         }
+        onOpenInExplorer: {
+            ActionProvider.openInExplorer()
+        }
+        onOpenChat: {
+            ActionProvider.showChat()
+        }
+        onHideChat: {
+            ActionProvider.hideChat()
+        }
+        onDeleteButtonClicked: {
+            if(!warningShown) {
+                deletePopup.open()
+                warningShown = true
+            } else {
+               ActionProvider.deleteFiles()
+            }
+        }
     }
+
+    ReconnectPopup {
+        id: reconnectPopup
+        visible: ClientStore.showReconnectPopup
+        onConnected: ActionProvider.reconnectToAlbum()
+        errorString: ClientStore.errorString
+    }
+
+    DeleteWarningPopup {
+        id: deletePopup
+        onClicked: {
+            close()
+            ActionProvider.deleteFiles()
+        }
+    }
+
     CreateFolderPopup {
         id: createFolderPopup
         errorString: ClientStore.errorString
@@ -72,13 +108,13 @@ Page {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         contentItem: Image {
             anchors.fill: parent
-         //   source: MainStore.imageUrl
+            source: ClientStore.imageUrl
             sourceSize.width: width
             sourceSize.height: height
             asynchronous: true
         }
-      //  visible: MainStore.showImagePopup
-     //   onAboutToHide: ActionProvider.hideImagePopup()
+        visible: ClientStore.showImagePopup
+        onAboutToHide: ActionProvider.hideImagePopup()
     }
 
     Item {
@@ -100,7 +136,8 @@ Page {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            width: 350
+            width: ClientStore.showChat ? 350 : 0
+            visible: ClientStore.showChat
             color: "#36393F"
             NChat {
                 anchors.fill: parent

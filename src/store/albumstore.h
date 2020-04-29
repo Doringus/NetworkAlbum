@@ -17,9 +17,7 @@ public:
     Q_PROPERTY(bool showImagePopup READ getShowImagePopup NOTIFY showImagePopupChanged)
     Q_PROPERTY(QUrl imageUrl READ getImageUrl NOTIFY imageUrlChanged)
     Q_PROPERTY(QAbstractListModel* conversationModel READ getConversationModel NOTIFY conversationModelChanged)
-    Q_PROPERTY(QString albumReserveFolder READ albumReserveFolder NOTIFY albumReserveFolderChanged)
     Q_PROPERTY(bool showChat READ getShowChat NOTIFY showChatChanged)
-    Q_PROPERTY(QAbstractListModel* historyModel READ getHistoryModel NOTIFY historyModelChanged)
 public:
     AlbumStore(const AlbumStore&) = delete;
     AlbumStore& operator=(const AlbumStore&) = delete;
@@ -36,9 +34,7 @@ public:
     QString getAlbumPageTitle();
     bool getShowImagePopup();
     QAbstractListModel* getConversationModel();
-    QString albumReserveFolder();
     bool getShowChat();
-    QAbstractListModel* getHistoryModel();
 signals:
     void albumUrlChanged();
     void currentFolderUrlChanged();
@@ -46,25 +42,26 @@ signals:
     void showImagePopupChanged();
     void imageUrlChanged();
     void conversationModelChanged();
-    void albumReserveFolderChanged();
     void showChatChanged();
-    void historyModelChanged();
-private:
+protected:
     AlbumStore() = default;
-    void processOpenAlbum();
+    void setAlbumUrl(const QUrl& url);
+    void setCurrentFolderUrl(const QUrl& url);
+    void setImageUrl(const QUrl& url);
+    void setAlbumPageTitle(const QString& title);
+    void setShowImagePopupVisibility(bool visible);
+private: 
     void processOpenFolder(const QUrl& folder);
     void processOpenImagePopup(const QUrl& imageUrl);
-    void processOpenReserveAlbum();
     void processOpenInExplorer();
 
     void setImagePopupVisibility(bool visible);
     void setChatVisibility(bool visible);
+protected:
+    ConversationModel *m_Conversation;
 private:
     QUrl m_CurrentAlbumUrl, m_CurrentFolderUrl, m_ImageUrl;
     QString m_AlbumPageTitle;
-    ConversationModel *m_Conversation;
-    ChangesHistoryModel *m_ChangesHistory;
-    QString m_AlbumReserveFolder;
     bool m_ShowImagePopup, m_ShowChat = true;
 };
 

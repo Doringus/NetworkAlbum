@@ -36,5 +36,7 @@
         <file>qml/popups/AlbumWarningPopup.qml</file>
         <file>res/albumIcon.jpg</file>
         <file>qml/popups/ChangesHistoryPopup.qml</file>
+        <file>qml/popups/DeleteWarningPopup.qml</file>
+        <file>qml/popups/ReconnectPopup.qml</file>
     </qresource>
 </RCC>

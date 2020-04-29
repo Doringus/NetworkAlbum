@@ -11,16 +11,18 @@ class ClientNetworkAccessMiddleware : public QObject, public Middleware {
 public:
     explicit ClientNetworkAccessMiddleware(QObject *parent = nullptr);
     QSharedPointer<Action> process(const QSharedPointer<Action>& action) override;
-public slots:
-    void onReceiveMessage(QString message);
+private slots:
+    void onServerClosedSession();
 private:
     void processConnectToAlbum(QString link, bool scaled);
     void processSendSyncData(QList<QPair<QString, QString>> data);
-    void processAuth(bool auth);
-    QJsonObject createMessage(int type, const QJsonValue& value);
     void processSendMessage(const QString& message);
+    void processReconnectToAlbum();
 private:
     ServerConnection *m_ServerConnection;
     bool m_Scaled;
+    QString m_Id;
+    QString m_Ip;
+    int m_Port;
 };
 

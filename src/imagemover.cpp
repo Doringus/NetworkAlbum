@@ -5,6 +5,7 @@
 
 ImageMover::ImageMover(QObject *parent) : QObject(parent) {
     m_Watcher = new QFutureWatcher<void>(this);
+    connect(m_Watcher, &QFutureWatcher<void>::finished, this, &ImageMover::finished);
 }
 
 void ImageMover::moveImageAsynch(const QList<QPair<QString, QString>>& changes, const QString& albumPath) {
@@ -18,9 +19,15 @@ void ImageMover::moveImageAsynch(const QList<QPair<QString, QString>>& changes, 
         }
     };
     if(m_Watcher->isRunning()) {
-        m_ChangesQueue.append(changes);
+        m_ChangesQueue.append({albumPath, changes});
     } else {
         m_Watcher->setFuture(QtConcurrent::run(moveImages, changes, albumPath));
+    }
+}
+
+void ImageMover::finished() {
+    if(m_ChangesQueue.size() != 0) {
+        moveImageAsynch(m_ChangesQueue.dequeue().second, m_ChangesQueue.dequeue().first);
     }
 }
 

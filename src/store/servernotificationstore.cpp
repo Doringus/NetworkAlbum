@@ -12,8 +12,10 @@ ServerNotificationStore::ServerNotificationStore() {
 }
 
 ServerNotificationStore::~ServerNotificationStore() {
+    if(m_TrayIcon != nullptr) {
+        m_TrayIcon->hide();
+    }
     m_TrayMenu->deleteLater();
-    m_TrayIcon->hide();
 }
 
 void ServerNotificationStore::process(const QSharedPointer<Action> &action) {

@@ -12,6 +12,7 @@
 #include "store/albumsstore.h"
 #include "store/albumstore.h"
 #include "store/servernotificationstore.h"
+#include "store/serveralbumstore.h"
 
 Core::Core(QObject *parent) : QObject(parent) {
     qRegisterMetaType<qintptr>("qintptr");
@@ -52,10 +53,10 @@ Core::Core(QObject *parent) : QObject(parent) {
         Q_UNUSED(engine)
         Q_UNUSED(jsEngine)
     });
-    qmlRegisterSingletonType<AlbumStore>("NetworkAlbum", 1, 0, "AlbumStore",
+    qmlRegisterSingletonType<ServerAlbumStore>("NetworkAlbum", 1, 0, "AlbumStore",
                                              [](QQmlEngine *engine, QJSEngine *jsEngine) -> QObject* {
-        QQmlEngine::setObjectOwnership(&AlbumStore::get(), QQmlEngine::CppOwnership);
-        return &AlbumStore::get();
+        QQmlEngine::setObjectOwnership(&ServerAlbumStore::get(), QQmlEngine::CppOwnership);
+        return &ServerAlbumStore::get();
         Q_UNUSED(engine)
         Q_UNUSED(jsEngine)
     });
@@ -79,7 +80,7 @@ Core::Core(QObject *parent) : QObject(parent) {
     Dispatcher::get().addStore(QSharedPointer<RootStore>(&RootStore::get(), [](RootStore*){}));
     Dispatcher::get().addStore(QSharedPointer<SessionsStore>(&SessionsStore::get(), [](SessionsStore*){}));
     Dispatcher::get().addStore(QSharedPointer<AlbumsStore>(&AlbumsStore::get(), [](AlbumsStore*){}));
-    Dispatcher::get().addStore(QSharedPointer<AlbumStore>(&AlbumStore::get(), [](AlbumStore*){}));
+    Dispatcher::get().addStore(QSharedPointer<ServerAlbumStore>(&ServerAlbumStore::get(), [](ServerAlbumStore*){}));
     Dispatcher::get().addStore(QSharedPointer<ClientStore>(&ClientStore::get(), [](ClientStore*){}));
     /// \warning Dont change the middlewares registration order
     Dispatcher::get().addMiddleware(QSharedPointer<SessionFactory>(m_SessionFactory, [](SessionFactory*){}));
@@ -100,7 +101,7 @@ void Core::onSessionCreated() {
 }
 
 void Core::onConnectedToAlbum() {
-    Dispatcher::get().removeStore(QSharedPointer<Store>(&AlbumStore::get(), [](AlbumStore*){}));
+    Dispatcher::get().removeStore(QSharedPointer<Store>(&ServerAlbumStore::get(), [](ServerAlbumStore*){}));
     Dispatcher::get().removeStore(QSharedPointer<Store>(&AlbumsStore::get(), [](AlbumsStore*){}));
     Dispatcher::get().removeStore(QSharedPointer<Store>(&SessionsStore::get(), [](SessionsStore*){}));
     Dispatcher::get().removeMiddleware(QSharedPointer<Middleware>(m_NetworkAccessMiddleware, [](NetworkAccessMiddleware*){}));

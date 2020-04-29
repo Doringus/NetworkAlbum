@@ -8,7 +8,8 @@ enum class NetworkActionTypes {
     ALBUM_IMAGES,
     SYNC,
     CONVERSATION,
-    DISCONNECT
+    DISCONNECT,
+    RECONNECT
 };
 
 struct networkMessage_t {

@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE void hideChat();
     Q_INVOKABLE void saveSettings(bool showNotifications, bool closeWindow);
     Q_INVOKABLE void closeWindow();
+    Q_INVOKABLE void reconnectToAlbum();
 private:
     ActionProvider() = default;
     ~ActionProvider() = default;

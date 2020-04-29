@@ -14,6 +14,10 @@ Item {
     signal moveButtonClicked()
     signal renameButtonClicked()
     signal sendImagesButtonClicked()
+    signal openInExplorer()
+    signal openChat()
+    signal hideChat()
+    signal deleteButtonClicked()
 
     Rectangle {
         id: componentTitle
@@ -76,6 +80,14 @@ Item {
             RowLayout {
                 visible: fileName != ""
                 NToolButton {
+                    icon: "\uf1f8"
+                    pointSize: 16
+                    toolTip: "Удалить"
+                    onClicked: {
+                        deleteButtonClicked()
+                    }
+                }
+                NToolButton {
                     icon: "\uf0ec"
                     pointSize: 16
                     toolTip: "Переместить"
@@ -113,19 +125,23 @@ Item {
                 icon: "\uf07c"
                 pointSize: 16
                 toolTip: "Открыть папку альбома"
+                onClicked: {
+                    openInExplorer()
+                }
             }
             ToolSeparator { }
             NToolButtonIndicator {
                 icon: "\uf0db"
                 pointSize: 16
                 toolTip: "Боковой чат"
+                onActivated: {
+                    openChat()
+                }
+                onDeactivated: {
+                    hideChat()
+                }
             }
             ToolSeparator { }
-            NToolButton {
-                icon: "\uf013"
-                pointSize: 16
-                toolTip: "Настройки"
-            }
             NToolButton {
                 icon: "\uf128"
                 pointSize: 16

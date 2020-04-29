@@ -9,14 +9,6 @@
 
 void AlbumStore::process(const QSharedPointer<Action> &action) {
     switch (action->getType<ActionType>()) {
-        case ActionType::OPEN_ALBUM: {
-            processOpenAlbum();
-            break;
-        }
-        case ActionType::OPEN_RESERVE_ALBUM: {
-            processOpenReserveAlbum();
-            break;
-        }
         case ActionType::OPEN_FOLDER: {
             processOpenFolder(action->getData<QUrl>());
             break;
@@ -68,60 +60,45 @@ QAbstractListModel* AlbumStore::getConversationModel() {
     return m_Conversation;
 }
 
-QString AlbumStore::albumReserveFolder() {
-    return m_AlbumReserveFolder;
-}
-
 bool AlbumStore::getShowChat() {
     return m_ShowChat;
 }
 
-QAbstractListModel* AlbumStore::getHistoryModel() {
-    return m_ChangesHistory;
-}
-
-void AlbumStore::processOpenAlbum() {
-    QUrl albumPath = SessionsStore::get().getCurrentSession().getAlbumPath();
-    m_Conversation = SessionsStore::get().getCurrentSession().getConversation();
-    m_ChangesHistory = SessionsStore::get().getCurrentSession().getChangesHistory();
-    m_AlbumPageTitle = albumPath.fileName();
-    m_CurrentAlbumUrl = albumPath;
-    m_CurrentFolderUrl = albumPath;
+void AlbumStore::setAlbumUrl(const QUrl &url) {
+    m_CurrentAlbumUrl = url;
     emit albumUrlChanged();
-    emit currentFolderUrlChanged();
-    emit albumPageTitleChanged();
-    emit conversationModelChanged();
-    emit historyModelChanged();
 }
 
-void AlbumStore::processOpenFolder(const QUrl& folder) {
-    m_CurrentFolderUrl = folder;
-    m_AlbumPageTitle = folder.fileName();
+void AlbumStore::setCurrentFolderUrl(const QUrl &url) {
+    m_CurrentFolderUrl = url;
     emit currentFolderUrlChanged();
-    emit albumPageTitleChanged();
 }
 
-void AlbumStore::processOpenImagePopup(const QUrl& imageUrl) {
-    m_ImageUrl = imageUrl;
-    setImagePopupVisibility(true);
+void AlbumStore::setImageUrl(const QUrl &url) {
+    m_ImageUrl = url;
     emit imageUrlChanged();
 }
 
-void AlbumStore::processOpenReserveAlbum() {
-    QUrl albumPath = SessionsStore::get().getCurrentSession().getAlbumPath();
-    QUrl reserve = SessionsStore::get().getCurrentSession().getAlbumReservePath();
-    m_Conversation = SessionsStore::get().getCurrentSession().getConversation();
-    m_ChangesHistory = SessionsStore::get().getCurrentSession().getChangesHistory();
-    m_AlbumReserveFolder = reserve.toLocalFile();
-    m_AlbumPageTitle = albumPath.fileName();
-    m_CurrentAlbumUrl = reserve;
-    m_CurrentFolderUrl = reserve;
-    emit albumUrlChanged();
-    emit currentFolderUrlChanged();
+void AlbumStore::setAlbumPageTitle(const QString &title) {
+    m_AlbumPageTitle = title;
     emit albumPageTitleChanged();
-    emit conversationModelChanged();
-    emit albumReserveFolderChanged();
-    emit historyModelChanged();
+}
+
+void AlbumStore::setShowImagePopupVisibility(bool visible) {
+    m_ShowImagePopup = visible;
+    emit showImagePopupChanged();
+}
+
+
+void AlbumStore::processOpenFolder(const QUrl& folder) {
+    setCurrentFolderUrl(folder);
+    setAlbumPageTitle(folder.fileName());
+}
+
+void AlbumStore::processOpenImagePopup(const QUrl& imageUrl) {
+    setImageUrl(imageUrl);
+    setImagePopupVisibility(true);
+    emit imageUrlChanged();
 }
 
 void AlbumStore::processOpenInExplorer(){

@@ -77,8 +77,7 @@ void Server::onClientNeedImages(const QString& link, bool scaled) {
 
 void Server::onAuthClient(const QString& link, AlbumClient *client) {
     qDebug() << "Auth client" << link << thread();
-    if(m_Links.contains(link)) {
-        m_Links.removeOne(link);
+    if(m_Links.contains(link) && !m_Clients.contains(link)) {
         QMetaObject::invokeMethod(client, "setAuth", Qt::QueuedConnection, Q_ARG(bool, true));
         m_Clients.insert(link, client);
     } else {
@@ -101,7 +100,6 @@ void Server::onSyncImages(const QString& link, const QVariant& data) {
 }
 
 void Server::onClientDisconnected(const QString& link) {
-    m_Links.append(link);
     m_Clients.remove(link);
 }
 

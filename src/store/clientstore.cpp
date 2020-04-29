@@ -11,6 +11,7 @@
 #include "../base/dispatcher.h"
 
 void ClientStore::process(const QSharedPointer<Action> &action) {
+    AlbumStore::process(action);
     switch (action->getType<ActionType>()) {
         case ActionType::IMAGES_RECEIVED: {
             if(action->getErrorString() == "") {
@@ -103,31 +104,26 @@ void ClientStore::process(const QSharedPointer<Action> &action) {
             processReceiveMessage(action->getData<QString>());
             break;
         }
+        case ActionType::CLIENT_DISCONNECTED: {
+            processShowReconnectPopup(true);
+            break;
+        }
+        case ActionType::CLIENT_CONNECTED: {
+            if(action->getErrorString() != "") {
+                processShowError(action->getErrorString());
+            }
+            break;
+        }
+        case ActionType::HIDE_RECONNECT_POPUP: {
+            processShowReconnectPopup(false);
+            break;
+        }
     }
 }
 
-bool ClientStore::getShowConnectPopup() {
-    return m_ShowConnectPopup;
-}
-
-QUrl ClientStore::getAlbumUrl() {
-    return m_CurrentAlbumUrl;
-}
-
-QUrl ClientStore::getCurrentFolderUrl() {
-    return m_CurrentFolderUrl;
-}
-
-QUrl ClientStore::getImageUrl() {
-    return m_ImageUrl;
-}
 
 QString ClientStore::getErrorString() {
     return m_ErrorString;
-}
-
-QString ClientStore::getFolderName() {
-    return m_FolderName;
 }
 
 bool ClientStore::getShowCreateFolderPopup() {
@@ -154,8 +150,12 @@ bool ClientStore::getShowRenamePopup() {
     return m_ShowRenamePopup;
 }
 
-QAbstractListModel *ClientStore::getConversationModel() {
-    return &m_Conversation;
+bool ClientStore::getShowReconnectPopup() {
+    return m_ShowReconnectPopup;
+}
+
+ClientStore::ClientStore() {
+    m_Conversation = new ConversationModel(this);
 }
 
 void ClientStore::processReceiveImages(const QJsonObject& jsonAlbum) {
@@ -175,13 +175,11 @@ void ClientStore::processReceiveImages(const QJsonObject& jsonAlbum) {
         image.loadFromData(QByteArray::fromBase64(encoded), "JPG");
         image.save(albumName + "/" + imageObject.value("Name").toString() + ".jpg", "JPG");
     }
-    setFolderName(albumName);
+    setAlbumPageTitle(albumName);
     setCurrentMoveFolderName(albumName);
-    m_CurrentAlbumUrl = QUrl::fromLocalFile(dir.absolutePath());
-    m_CurrentFolderUrl = m_CurrentAlbumUrl;
-    processChangeMoveDir(m_CurrentAlbumUrl);
-    emit albumUrlChanged();
-    emit currentFolderUrlChanged();
+    setAlbumUrl(QUrl::fromLocalFile(dir.absolutePath()));;
+    setCurrentFolderUrl(QUrl::fromLocalFile(dir.absolutePath()));
+    processChangeMoveDir(getAlbumUrl());
     emit connectedToAlbum();
 }
 
@@ -191,7 +189,7 @@ void ClientStore::processCreateFolder(QString folderName) {
         return;
     }
     folderName = folderName.trimmed();
-    QString folderPath = m_CurrentFolderUrl.toString(QUrl::PreferLocalFile) + "/" + folderName;
+    QString folderPath = getCurrentFolderUrl().toString(QUrl::PreferLocalFile) + "/" + folderName;
     QDir dir(folderPath);
     if(dir.exists()) {
         processShowError("Папка с таким именем уже существует");
@@ -206,10 +204,7 @@ void ClientStore::processCreateFolder(QString folderName) {
 }
 
 void ClientStore::processOpenFolder(const QUrl& folderUrl) {
-    m_CurrentFolderUrl = folderUrl;
-    setFolderName(folderUrl.fileName());
     processClearSelectedUrl();
-    emit currentFolderUrlChanged();
 }
 
 void ClientStore::processShowError(const QString& errorString) {
@@ -220,11 +215,6 @@ void ClientStore::processShowError(const QString& errorString) {
 void ClientStore::setCreateFolderPopupVisibility(bool visible) {
     m_ShowCreateFolderPopup = visible;
     emit showCreateFolderPopupChanged();
-}
-
-void ClientStore::setFolderName(const QString& folderName) {
-    m_FolderName = folderName;
-    emit folderNameChanged();
 }
 
 void ClientStore::setFileName(const QString& albumName) {
@@ -328,10 +318,9 @@ void ClientStore::processDeleteFiles() {
         QFileInfo info(localPath);
         if(info.isDir()) {
             QDir dir(localPath);
-            dir.removeRecursively();
-        } else {
-            QFile file;
-            file.remove(localPath);
+            if(dir.isEmpty()) {
+                dir.removeRecursively();
+            }
         }
     }
 }
@@ -352,11 +341,15 @@ void ClientStore::processSyncImages() {
 }
 
 void ClientStore::processSendMessage(const QString &message) {
-    m_Conversation.add(message, true);
+    m_Conversation->add(message, true);
     Dispatcher::get().dispatch(new Action(ActionType::SEND_MESSAGE, message.trimmed()));
 }
 
 void ClientStore::processReceiveMessage(const QString &message) {
-    m_Conversation.add(message, false);
+    m_Conversation->add(message, false);
 }
 
+void ClientStore::processShowReconnectPopup(bool show) {
+    m_ShowReconnectPopup = show;
+    emit showReconnectPopupChanged();
+}

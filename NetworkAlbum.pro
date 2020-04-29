@@ -41,6 +41,7 @@ SOURCES += \
         src/store/conversationstore.cpp \
         src/store/linkstore.cpp \
         src/store/rootstore.cpp \
+        src/store/serveralbumstore.cpp \
         src/store/servernotificationstore.cpp \
         src/store/sessionsstore.cpp
 
@@ -89,5 +90,6 @@ HEADERS += \
     src/store/conversationstore.h \
     src/store/linkstore.h \
     src/store/rootstore.h \
+    src/store/serveralbumstore.h \
     src/store/servernotificationstore.h \
     src/store/sessionsstore.h

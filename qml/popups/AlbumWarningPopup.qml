@@ -14,7 +14,7 @@ Popup {
     width: 430
     height: 300
     modal: true
-    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+    closePolicy: Popup.NoAutoClose
     clip: true
 
     Overlay.modal: Rectangle {

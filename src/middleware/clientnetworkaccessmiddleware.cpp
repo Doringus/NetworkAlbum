@@ -3,6 +3,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QMessageBox>
+#include <QApplication>
 
 #include "../action/actiontypes.h"
 #include "../base/action.h"
@@ -11,7 +13,7 @@
 
 ClientNetworkAccessMiddleware::ClientNetworkAccessMiddleware(QObject *parent) : QObject(parent) {
     m_ServerConnection = new ServerConnection(this);
-    connect(m_ServerConnection, &TcpConnection::messageReady, this, &ClientNetworkAccessMiddleware::onReceiveMessage);
+    connect(m_ServerConnection, &ServerConnection::sessionClosed, this, &ClientNetworkAccessMiddleware::onServerClosedSession);
 }
 
 QSharedPointer<Action> ClientNetworkAccessMiddleware::process(const QSharedPointer<Action> &action) {
@@ -29,76 +31,42 @@ QSharedPointer<Action> ClientNetworkAccessMiddleware::process(const QSharedPoint
             processSendMessage(action->getData<QString>());
             break;
         }
+        case ActionType::RECONNECT_TO_ALBUM: {
+            processReconnectToAlbum();
+        }
     }
     return action;
 }
 
-void ClientNetworkAccessMiddleware::onReceiveMessage(QString message) {
-    qDebug() << this << message;
-    QJsonObject messageObject = QJsonDocument::fromJson(message.toUtf8()).object();
-    int type = messageObject.value("MessageType").toInt();
-    QJsonValue messageValue = messageObject.value("MessageValue");
-    switch (static_cast<NetworkActionTypes>(type)) {
-        case NetworkActionTypes::AUTHORIZATION: {
-            processAuth(messageValue.toBool());
-            break;
-        }
-        case NetworkActionTypes::ALBUM_IMAGES: {
-            Dispatcher::get().dispatch(new Action(ActionType::IMAGES_RECEIVED, QVariant::fromValue<QJsonObject>(messageObject)));
-            break;
-        }
-        case NetworkActionTypes::CONVERSATION: {
-             Dispatcher::get().dispatch(new Action(ActionType::RECEIVE_MESSAGE, messageValue.toString()));
-             break;
-        }
-    }
+void ClientNetworkAccessMiddleware::onServerClosedSession() {
+    QMessageBox box;
+    box.setText("Сессия закрыта");
+    box.setInformativeText("Сервер закрыл сессию, дальнейшая работа невозможна. Все фотографии будут сохранены.");
+    box.setIcon(QMessageBox::Warning);
+    box.setStandardButtons(QMessageBox::Ok);
+    box.exec();
+    QApplication::quit();
 }
 
 void ClientNetworkAccessMiddleware::processConnectToAlbum(QString link, bool scaled) {
     QStringList parts = link.split(':');
-    m_ServerConnection->connectToServer(parts.first(), 22222);
+    m_ServerConnection->setScaled(scaled);
+    m_ServerConnection->setId(parts.at(1));
+    m_Ip = parts.first();
+    m_Port = 22222;
+    m_ServerConnection->connectToServer(parts.first(), 22222, false);
     m_Scaled = scaled;
-    connect(m_ServerConnection, &ServerConnection::connected, this, [=](){
-        QJsonObject messageObject;
-        messageObject.insert("MessageType", static_cast<int>(NetworkActionTypes::AUTHORIZATION));
-        messageObject.insert("MessageValue", parts.at(1));
-        messageObject.insert("Scaled", scaled);
-        m_ServerConnection->sendMessage(QJsonDocument(messageObject).toJson(QJsonDocument::Compact));
-    });
+    m_Id = parts.at(1);
 }
 
 void ClientNetworkAccessMiddleware::processSendSyncData(QList<QPair<QString, QString>> data) {
-    qDebug() << "Sending synch data" << data;
-    QJsonObject messageObject;
-    messageObject.insert("MessageType", static_cast<int>(NetworkActionTypes::SYNC));
-    QJsonArray images;
-    foreach(QPair changes, data) {
-        QJsonObject change;
-        change.insert("NewPath", changes.first);
-        change.insert("OldPath", changes.second);
-        images.append(change);
-    }
-    messageObject.insert("MessageValue", images);
-    m_ServerConnection->sendMessage(QJsonDocument(messageObject).toJson(QJsonDocument::Compact));
-}
-
-void ClientNetworkAccessMiddleware::processAuth(bool auth) {
-    if(!auth) {
-
-    } else {
-        m_ServerConnection->sendMessage(QJsonDocument(createMessage(static_cast<int>(NetworkActionTypes::ALBUM_IMAGES), m_Scaled))
-                                    .toJson(QJsonDocument::Compact));
-    }
-}
-
-QJsonObject ClientNetworkAccessMiddleware::createMessage(int type, const QJsonValue &value) {
-    QJsonObject object;
-    object.insert("MessageType", type);
-    object.insert("MessageValue", value);
-    return object;
+    m_ServerConnection->sendSyncData(data);
 }
 
 void ClientNetworkAccessMiddleware::processSendMessage(const QString &message) {
-    m_ServerConnection->sendMessage(QJsonDocument(createMessage(static_cast<int>(NetworkActionTypes::CONVERSATION), message))
-                                    .toJson(QJsonDocument::Compact));
+    m_ServerConnection->sendChatMessage(message);
+}
+
+void ClientNetworkAccessMiddleware::processReconnectToAlbum() {
+    m_ServerConnection->connectToServer(m_Ip, m_Port, true);
 }

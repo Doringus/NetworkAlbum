@@ -18,6 +18,12 @@ void RootStore::process(const QSharedPointer<Action> &action) {
             processShowError(action->getErrorString());
             break;
         }
+        case ActionType::IMAGES_RECEIVED: {
+            if(action->getErrorString() != "") {
+                processShowError(action->getErrorString());
+            }
+            break;
+        }
         case ActionType::OPEN_CREATION_POPUP: {
             setCreatePopupVisibility(true);
             break;
