@@ -9,7 +9,9 @@
 
 class Server;
 class AlbumLinkFactory;
-
+/*!
+ *      \brief The NetworkAccessMiddleware class provides network interface for server
+ */
 class NetworkAccessMiddleware : public QObject, public Middleware {
     Q_OBJECT
 public:

@@ -1,8 +1,6 @@
 #include "worker.h"
 
 #include <QDebug>
-
-#include "albumlinkfactory.h"
 #include "albumclient.h"
 #include "networkactiontypes.h"
 

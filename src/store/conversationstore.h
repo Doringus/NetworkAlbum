@@ -5,6 +5,9 @@
 #include "../base/store.h"
 #include "../conversationmodel.h"
 
+/*!
+ * \brief The ConversationStore class stores conversation model for current album
+ */
 class ConversationStore : public QObject, public Store {
     Q_OBJECT
 public:

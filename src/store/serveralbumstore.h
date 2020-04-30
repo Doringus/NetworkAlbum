@@ -2,6 +2,9 @@
 
 #include "albumstore.h"
 
+/*!
+ * \brief The ServerAlbumStore class is server implementation for album page
+ */
 class ServerAlbumStore : public AlbumStore {
     Q_OBJECT
 public:

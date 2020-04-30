@@ -5,6 +5,9 @@
 #include <QPair>
 #include <QUrl>
 
+/*!
+ * \brief The ConversationModel class provides simple list model for chat
+ */
 class ConversationModel : public QAbstractListModel {
     Q_OBJECT
 public:

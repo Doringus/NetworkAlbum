@@ -20,7 +20,6 @@ SOURCES += \
         src/changeshistorymodel.cpp \
         src/conversationmodel.cpp \
         src/core.cpp \
-        src/displayfilesystemmodel.cpp \
         src/imageconverter.cpp \
         src/imagemover.cpp \
         src/main.cpp \
@@ -29,7 +28,6 @@ SOURCES += \
         src/middleware/networkaccessmiddleware.cpp \
         src/middleware/sessionfactory.cpp \
         src/network/albumclient.cpp \
-        src/network/albumlinkfactory.cpp \
         src/network/server.cpp \
         src/network/serverconnection.cpp \
         src/network/tcpconnection.cpp \
@@ -39,7 +37,7 @@ SOURCES += \
         src/store/albumstore.cpp \
         src/store/clientstore.cpp \
         src/store/conversationstore.cpp \
-        src/store/linkstore.cpp \
+        src/store/eastereggstore.cpp \
         src/store/rootstore.cpp \
         src/store/serveralbumstore.cpp \
         src/store/servernotificationstore.cpp \
@@ -69,7 +67,6 @@ HEADERS += \
     src/changeshistorymodel.h \
     src/conversationmodel.h \
     src/core.h \
-    src/displayfilesystemmodel.h \
     src/imageconverter.h \
     src/imagemover.h \
     src/middleware/clientnetworkaccessmiddleware.h \
@@ -77,7 +74,6 @@ HEADERS += \
     src/middleware/networkaccessmiddleware.h \
     src/middleware/sessionfactory.h \
     src/network/albumclient.h \
-    src/network/albumlinkfactory.h \
     src/network/networkactiontypes.h \
     src/network/server.h \
     src/network/serverconnection.h \
@@ -88,7 +84,7 @@ HEADERS += \
     src/store/albumstore.h \
     src/store/clientstore.h \
     src/store/conversationstore.h \
-    src/store/linkstore.h \
+    src/store/eastereggstore.h \
     src/store/rootstore.h \
     src/store/serveralbumstore.h \
     src/store/servernotificationstore.h \

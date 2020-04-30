@@ -8,6 +8,9 @@
 #include "../session.h"
 #include "../changeshistorymodel.h"
 
+/*!
+ *      \brief The AlbumsStore class is generic store for common elements in client and server album pages
+ */
 class AlbumStore : public QObject, public Store {
     Q_OBJECT
 public:

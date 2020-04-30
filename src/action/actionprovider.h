@@ -4,6 +4,10 @@
 #include <QUrl>
 #include <QVariant>
 
+/*!
+ *      \brief The ActionProvider class provides qml interface for creating actions
+ *      \warning ActionProvider is singleton
+ */
 class ActionProvider : public QObject {
     Q_OBJECT
 public:
@@ -54,6 +58,9 @@ public:
     Q_INVOKABLE void saveSettings(bool showNotifications, bool closeWindow);
     Q_INVOKABLE void closeWindow();
     Q_INVOKABLE void reconnectToAlbum();
+    Q_INVOKABLE void hideEasterEgg();
+    Q_INVOKABLE void showHelpPopup();
+    Q_INVOKABLE void hideHelpPopup();
 private:
     ActionProvider() = default;
     ~ActionProvider() = default;

@@ -7,6 +7,7 @@ Item {
     height: 50
 
     signal openSettings()
+    signal openHelp()
 
     Rectangle {
         id: componentTitle
@@ -51,6 +52,7 @@ Item {
                 icon: "\uf128"
                 pointSize: 16
                 toolTip: "Помощь"
+                onClicked: openHelp()
             }
         }
     }

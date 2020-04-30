@@ -160,7 +160,7 @@ ClientStore::ClientStore() {
 
 void ClientStore::processReceiveImages(const QJsonObject& jsonAlbum) {
     QJsonArray jsonImages = jsonAlbum.value("MessageValue").toArray();
-    QString albumName = "TEST";
+    QString albumName = "SavedAlbum";
     QString folderPath = QDir::currentPath() + "/" + albumName;
     m_AlbumDir.setPath(QDir::currentPath() + "/" + albumName);
     QDir dir(folderPath);

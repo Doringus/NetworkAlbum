@@ -52,6 +52,20 @@ ApplicationWindow {
         }
     }
 
+    HelpPopup {
+        id: helpPopup
+        visible: RootStore.showHelpPopup
+        onAboutToHide: ActionProvider.hideHelpPopup()
+    }
+
+    EasterEggPopup {
+        id: easterEgg
+        visible: EasterEggStore.showEasterEgg
+        onAboutToHide: {
+            ActionProvider.hideEasterEgg()
+        }
+    }
+
     CreateAlbumPopup {
         id: createAlbumPopup
 

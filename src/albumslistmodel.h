@@ -5,6 +5,9 @@
 #include <QPair>
 #include <QUrl>
 
+/*!
+ * \brief The AlbumsListModel class provides simple list model for albums page
+ */
 class AlbumsListModel : public QAbstractListModel {
     Q_OBJECT
 public:

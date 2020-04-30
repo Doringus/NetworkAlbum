@@ -7,6 +7,10 @@
 #include "middleware/clientnetworkaccessmiddleware.h"
 #include "middleware/linkmiddleware.h"
 
+/*!
+ *      \brief The Core class manages all application.
+ *      It creates stores and middlewares. Provides them to qml layer and dispatcher
+ */
 class Core : public QObject {
     Q_OBJECT
 public:

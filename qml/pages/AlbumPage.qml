@@ -38,6 +38,9 @@ Page {
         onOpenHistory: {
             changesHistory.open()
         }
+        onOpenHelp: {
+            ActionProvider.showHelpPopup()
+        }
     }
     property var imagesModel
 

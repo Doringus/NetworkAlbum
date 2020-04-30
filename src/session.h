@@ -7,6 +7,9 @@
 #include "conversationmodel.h"
 #include "changeshistorymodel.h"
 
+/*!
+ * \brief The Session class stores all information about session
+ */
 class Session {
 public:
     explicit Session(QUrl albumPath = QUrl(), bool hasCopy = false, double compress = 50.0f);

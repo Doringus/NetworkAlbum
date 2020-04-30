@@ -3,12 +3,15 @@
 #include <QObject>
 #include <QUrl>
 #include <QHash>
+#include <QDir>
 
 #include "../base/store.h"
-#include "../displayfilesystemmodel.h"
 #include "../conversationmodel.h"
 #include "albumstore.h"
 
+/*!
+ *      \brief The ClientStore class manages client application
+ */
 class ClientStore : public AlbumStore {
     Q_OBJECT
 public:

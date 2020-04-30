@@ -5,6 +5,9 @@
 #include <QJsonObject>
 #include <QFileInfoList>
 
+/*!
+ * \brief The ImageConventer class provides asynch image scaler
+ */
 class ImageConventer : public QObject {
     Q_OBJECT
 public:

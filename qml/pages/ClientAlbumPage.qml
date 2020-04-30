@@ -47,6 +47,9 @@ Page {
                ActionProvider.deleteFiles()
             }
         }
+        onOpenHelp: {
+            ActionProvider.showHelpPopup()
+        }
     }
 
     ReconnectPopup {

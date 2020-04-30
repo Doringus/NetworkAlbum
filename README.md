@@ -23,11 +23,12 @@ Completed features
 - Sending changes on server
 - Settings page
 - Saving images after synchronizing in different folder (if option is on)
+- Help page
+- Easter egg
 
 In progress
 ==========
-- Help page
-- Easter egg
+
 
 Bugs
 ====

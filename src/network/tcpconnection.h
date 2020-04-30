@@ -4,6 +4,10 @@
 #include <QTcpSocket>
 #include <QDataStream>
 
+/*!
+ *      \brief The TcpConnection class is QTcpSocket wrapper
+ *      Class handles QTcpSocket signals
+ */
 class TcpConnection : public QObject {
     Q_OBJECT
 public:

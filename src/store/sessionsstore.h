@@ -8,8 +8,8 @@
 #include "../network/networkactiontypes.h"
 #include "../imagemover.h"
 
-/*! \brief Generic store. Stores sessions data.
-    Manages link popup
+/*!     \brief Generic store. Stores sessions data.
+        Manages all actions which have influence on sessions.
 */
 class SessionsStore : public QObject, public Store  {
     Q_OBJECT 

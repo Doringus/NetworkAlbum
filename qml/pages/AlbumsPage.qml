@@ -8,6 +8,7 @@ import NetworkAlbum 1.0
 Page {
     header: NMainToolBar{
         onOpenSettings: ActionProvider.showSettingsPopup()
+        onOpenHelp: ActionProvider.showHelpPopup()
     }
     property var albumsModel
     signal openAlbum()

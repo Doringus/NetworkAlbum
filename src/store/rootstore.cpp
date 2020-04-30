@@ -42,6 +42,14 @@ void RootStore::process(const QSharedPointer<Action> &action) {
             processShowError("");
             break;
         }
+        case ActionType::SHOW_HELP_POPUP: {
+            setHelpPopupVisibility(true);
+            break;
+        }
+        case ActionType::HIDE_HELP_POPUP: {
+            setHelpPopupVisibility(false);
+            break;
+        }
     }
 }
 
@@ -51,6 +59,10 @@ bool RootStore::getShowCreatePopup() {
 
 bool RootStore::getShowOpenPopup() {
     return m_ShowOpenPopup;
+}
+
+bool RootStore::getShowHelpPopup() {
+    return m_ShowHelpPopup;
 }
 
 QString RootStore::getErrorString() {
@@ -70,4 +82,9 @@ void RootStore::setCreatePopupVisibility(bool visible) {
 void RootStore::setOpenPopupVisibility(bool visible) {
     m_ShowOpenPopup = visible;
     emit showOpenPopupChanged();
+}
+
+void RootStore::setHelpPopupVisibility(bool visible) {
+    m_ShowHelpPopup = visible;
+    emit showHelpPopupChanged();
 }

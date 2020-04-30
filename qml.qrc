@@ -38,5 +38,9 @@
         <file>qml/popups/ChangesHistoryPopup.qml</file>
         <file>qml/popups/DeleteWarningPopup.qml</file>
         <file>qml/popups/ReconnectPopup.qml</file>
+        <file>qml/popups/HelpPopup.qml</file>
+        <file>qml/popups/EasterEggPopup.qml</file>
+        <file>res/easterEgg.mp4</file>
+        <file>res/easterEgg.avi</file>
     </qresource>
 </RCC>

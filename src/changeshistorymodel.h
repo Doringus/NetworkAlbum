@@ -4,6 +4,9 @@
 #include <QAbstractListModel>
 #include <QPair>
 
+/*!
+ * \brief The ChangesHistoryModel class provides simple list model for changes history popup
+ */
 class ChangesHistoryModel : public QAbstractListModel {
     Q_OBJECT
 public:

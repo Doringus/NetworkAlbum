@@ -6,6 +6,10 @@
 #include "../albumslistmodel.h"
 #include "../session.h"
 
+/*!
+ * \brief The AlbumsStore class provides store for albums page.
+ * It manages link popup, settings popup and list model for albums list
+ */
 class AlbumsStore : public QObject, public Store {
     Q_OBJECT
 public:

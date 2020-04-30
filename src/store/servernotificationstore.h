@@ -6,6 +6,10 @@
 #include "../base/store.h"
 #include "../network/networkactiontypes.h"
 
+/*!
+ *      \brief The ServerNotificationStore class manages system tray.
+ *      It creates system notifications.
+ */
 class ServerNotificationStore : public QObject, public Store {
     Q_OBJECT
 public:

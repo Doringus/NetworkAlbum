@@ -13,6 +13,7 @@
 #include "store/albumstore.h"
 #include "store/servernotificationstore.h"
 #include "store/serveralbumstore.h"
+#include "store/eastereggstore.h"
 
 Core::Core(QObject *parent) : QObject(parent) {
     qRegisterMetaType<qintptr>("qintptr");
@@ -67,6 +68,13 @@ Core::Core(QObject *parent) : QObject(parent) {
         Q_UNUSED(engine)
         Q_UNUSED(jsEngine)
     });
+    qmlRegisterSingletonType<EasterEggStore>("NetworkAlbum", 1, 0, "EasterEggStore",
+                                             [](QQmlEngine *engine, QJSEngine *jsEngine) -> QObject* {
+        QQmlEngine::setObjectOwnership(&EasterEggStore::get(), QQmlEngine::CppOwnership);
+        return &EasterEggStore::get();
+        Q_UNUSED(engine)
+        Q_UNUSED(jsEngine)
+    });
 
 
     qmlRegisterSingletonType<ActionProvider>("NetworkAlbum", 1, 0, "ClientStore",
@@ -77,6 +85,7 @@ Core::Core(QObject *parent) : QObject(parent) {
         Q_UNUSED(jsEngine)
     });
 
+    Dispatcher::get().addStore(QSharedPointer<EasterEggStore>(&EasterEggStore::get(), [](EasterEggStore*){}));
     Dispatcher::get().addStore(QSharedPointer<RootStore>(&RootStore::get(), [](RootStore*){}));
     Dispatcher::get().addStore(QSharedPointer<SessionsStore>(&SessionsStore::get(), [](SessionsStore*){}));
     Dispatcher::get().addStore(QSharedPointer<AlbumsStore>(&AlbumsStore::get(), [](AlbumsStore*){}));

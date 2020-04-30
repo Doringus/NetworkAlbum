@@ -5,6 +5,9 @@
 #include <QFutureWatcher>
 #include <QQueue>
 
+/*!
+ * \brief The ImageMover class provides asynch image mover
+ */
 class ImageMover : public QObject {
 public:
     explicit ImageMover(QObject *parent = nullptr);

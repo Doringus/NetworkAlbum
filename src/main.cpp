@@ -7,7 +7,6 @@
 
 #include "base/action.h"
 #include "base/dispatcher.h"
-#include "store/linkstore.h"
 #include "action/actionprovider.h"
 #include "middleware/sessionfactory.h"
 #include "core.h"

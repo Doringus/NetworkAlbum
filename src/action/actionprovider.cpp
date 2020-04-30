@@ -164,3 +164,15 @@ void ActionProvider::closeWindow() {
 void ActionProvider::reconnectToAlbum() {
     Dispatcher::get().dispatch(new Action(ActionType::RECONNECT_TO_ALBUM));
 }
+
+void ActionProvider::hideEasterEgg() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_EASTER_EGG_POPUP));
+}
+
+void ActionProvider::showHelpPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::SHOW_HELP_POPUP));
+}
+
+void ActionProvider::hideHelpPopup() {
+    Dispatcher::get().dispatch(new Action(ActionType::HIDE_HELP_POPUP));
+}
