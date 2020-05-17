@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>baseComponents/AlbumListItem.qml</file>
+        <file>baseComponents/AlbumNewItem.qml</file>
+        <file>baseComponents/FolderListItem.qml</file>
+        <file>baseComponents/ImageListItem.qml</file>
+        <file>baseComponents/MenuButton.qml</file>
+        <file>baseComponents/NButton.qml</file>
+        <file>baseComponents/NChat.qml</file>
+        <file>baseComponents/NClientToolBar.qml</file>
+        <file>baseComponents/NCopyField.qml</file>
+        <file>baseComponents/NFolderItem.qml</file>
+        <file>baseComponents/NMainToolBar.qml</file>
+        <file>baseComponents/NMenuItem.qml</file>
+        <file>baseComponents/NSlider.qml</file>
+        <file>baseComponents/NTextField.qml</file>
+        <file>baseComponents/NToggleButton.qml</file>
+        <file>baseComponents/NToolBar.qml</file>
+        <file>baseComponents/NToolButton.qml</file>
+        <file>baseComponents/NToolButtonIndicator.qml</file>
+        <file>baseComponents/NToolTip.qml</file>
+        <file>pages/OpenAlbumPage.qml</file>
+        <file>res/fonts/fontawesome-webfont.ttf</file>
+        <file>pages/ConnectAlbumPage.qml</file>
+        <file>pages/AlbumPage.qml</file>
+        <file>popups/RenamePopup.qml</file>
+        <file>pages/MovePage.qml</file>
+        <file>popups/DeleteWarningPopup.qml</file>
+        <file>popups/CreateFolderPopup.qml</file>
+        <file>popups/MultipleMenuPopup.qml</file>
+        <file>pages/AboutPage.qml</file>
+        <file>pages/ChatPage.qml</file>
+        <file>pages/ImagePage.qml</file>
+    </qresource>
+</RCC>
